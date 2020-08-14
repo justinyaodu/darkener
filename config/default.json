@@ -178,6 +178,21 @@
             "SIDEBAR_LOADING_HEADER { filter: INVERT; }",
             "INVERT(SIDEBAR_LOADING_MAIN)"
           ]
+        },
+        {
+          "regex": "^https://ogs\\.google\\.com",
+          "comment": "Apps menu iframe (found in Gmail, Google Drive, etc. at top right).",
+          "macros":
+          [
+            ["APP_ICON", ".MrEfLc"]
+          ],
+          "customStyles":
+          [
+            "/* Do not set black background: preserve iframe transparency. */",
+            null,
+            "INVERT(BODY)",
+            "APP_ICON { filter: INVERT; }"
+          ]
         }
       ]
     }
