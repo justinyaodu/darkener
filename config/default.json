@@ -85,16 +85,22 @@
       [
         {
           "regex": "^https://www\\.google\\.com/maps",
-          "comment": "Works well for the map view, but not the satellite view.",
           "macros":
           [
-            ["PREVIEW", ".full-screen", "Preview before map finishes loading."]
+            ["PREVIEW", ".full-screen", "Preview before map finishes loading."],
+            ["APP", "#app-container"],
+            ["APP_SATELLITE", "APP.app-imagery-mode", "App container in satellite view."],
+            ["MAP", "#scene"],
+            ["SEARCH_ICON", ".searchbox-icon"]
           ],
           "customStyles":
           [
             "PREVIEW img { filter: none; }",
             "/* Sometimes the height is set to 0px, or the width doesn't update on window resize. */",
-            "html, body { width: 100% !important; height: 100% !important; }"
+            "html, body { width: 100% !important; height: 100% !important;",
+            "/* Uninvert the map when in satellite view. */",
+            "APP_SATELLITE MAP { filter: INVERT; }",
+            "SEARCH_ICON { filter: none; }"
           ]
         },
         {
