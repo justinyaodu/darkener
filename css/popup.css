@@ -1,0 +1,11 @@
+@import url('common.css');
+
+:root {
+  --spacing: 0.25rem;
+}
+
+body {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}

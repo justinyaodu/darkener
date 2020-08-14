@@ -1,0 +1,37 @@
+@import url('common.css');
+
+/* Size the editing area to fill the screen. */
+
+body {
+  height: 100vh;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#edit-area {
+  flex: 1;
+  width: 100%;
+  resize: none;
+}
+
+/* Use a readable monospace font for the edit area and status bar. */
+#edit-area, #status-bar {
+  font-family: 'Source Code Pro', monospace;
+}
+
+/* Remove margin between editing area and status bar. */
+#edit-area {
+  margin-bottom: 0;
+}
+
+/* Status message colors. */
+.status-success { color: lime; }
+.status-error   { color: red;  }
+
+/* Show messages on the left and cursor position on the right. */
+#status-bar {
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}

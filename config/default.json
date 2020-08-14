@@ -1,0 +1,147 @@
+{
+  "macros":
+  [
+    [
+      "DCONTRAST",
+      "brightness(0.5) contrast(var(--dkn-dcontrast, 1)) brightness(2)",
+      "Adjust contrast between dark colors."
+    ],
+    [
+      "INVERT",
+      "invert() hue-rotate(180deg)",
+      "Invert brightness while preserving hue."
+    ]
+  ],
+  "templates":
+  [
+    [
+      "BLACK",
+      "ARG_1 { background: black !important; }",
+      "Set the background of the selected elements to black."
+    ],
+    [
+      "INVERT",
+      "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }",
+      "Invert the selected elements. Also uninvert any nested iframes, images, and videos."
+    ],
+    [
+      "INVERT_DCONTRAST",
+      "ARG_1 { filter: INVERT DCONTRAST; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }"
+    ]
+  ],
+  "rules":
+  [
+    {
+      "regex": "^https://www\\.amazon\\.com",
+      "macros":
+      [
+        ["HEADER", "header"],
+        ["HMENU", "#hmenu-canvas", "Top left hamburger menu."],
+        ["SEARCH_BOX", "#nav-search"],
+        ["SEARCH_DROPDOWN", "#nav-flyout-searchAjax", "Search box dropdown."],
+        ["FLYOUTS", "#nav-flyout-anchor", "Parent element for navbar flyouts."],
+        ["FOOTER", "#navFooter"]
+      ],
+      "customStyles":
+      [
+        "BLACK(body)",
+        "/* Header's siblings: children of container on main page, children of body on bestsellers page. */",
+        "INVERT(HEADER ~ *:not(FOOTER))",
+        "INVERT(HMENU)",
+        "SEARCH_BOX, SEARCH_DROPDOWN { filter: INVERT; }",
+        "INVERT(FLYOUTS)",
+        "FOOTER { --dkn-dcontrast: 1.2; filter: DCONTRAST; }"
+      ]
+    },
+    {
+      "regex": "^https://github\\.com",
+      "macros":
+      [
+        ["HEADER", ".js-header-wrapper"],
+        ["DROPDOWN", ".dropdown-menu"],
+        ["HEADER_SEARCH", ".header-search"]
+      ],
+      "customStyles":
+      [
+        "BLACK(body)",
+        ":root { --dkn-dcontrast: 0.98; }",
+        "INVERT_DCONTRAST(body > *:not(HEADER))",
+        "INVERT(HEADER DROPDOWN)",
+        "/*",
+        "Header search box uses inline !important styles, which can't be overridden.",
+        "It also can't be properly inverted when unfocused, since it is partly transparent.",
+        "*/",
+        "HEADER_SEARCH[aria-expanded=true] { filter: INVERT; z-index: 9999; }"
+      ]
+    },
+    {
+      "regex": "^https://[^/]+\\.google\\.com",
+      "customStyles":
+      [
+        "BLACK(html)",
+        "INVERT(body)"
+      ],
+      "rules":
+      [
+        {
+          "regex": "^https://www\\.google\\.com/maps",
+          "comment": "Works well for the map view, but not the satellite view.",
+          "macros":
+          [
+            ["PREVIEW", ".full-screen", "Preview before map finishes loading."]
+          ],
+          "customStyles":
+          [
+            "PREVIEW img { filter: none; }",
+            "/* Sometimes the height is set to 0px, or the width doesn't update on window resize. */",
+            "html, body { width: 100% !important; height: 100% !important; }"
+          ]
+        },
+        {
+          "regex": "^https://docs\\.google\\.com/(document|presentation|spreadsheets|forms)",
+          "macros":
+          [
+            ["TEMPLATES", ".docs-homescreen-templates-templateview-preview", "Document template preview bar."]
+          ],
+          "customStyles":
+          [
+            "/* Do not uninvert document template preview images. */",
+            "TEMPLATES img { filter: none; }"
+          ],
+          "rules":
+          [
+            {
+              "regex": "^https://docs\\.google\\.com/forms",
+              "comment": "Set a white background, which is inverted to black.",
+              "customStyles": ["body { background: white !important; }"]
+            }
+          ]
+        },
+        {
+          "regex": "^https://drive\\.google\\.com",
+          "macros":
+          [
+            ["THUMBNAIL", "img[src^=\"https://lh3.google.com\"]", "File preview thumbnails."],
+            ["QA_DOC_FILE", ".g5SSAf", "Non-image file in Quick Access."],
+            ["MAIN_FILE", "div[role=gridcell]", "A file in the main view."],
+            ["MAIN_IMAGE_FILE", "MAIN_FILE[aria-label$=Image]", "An image file in the main view."],
+            ["MAIN_VIDEO_FILE", "MAIN_FILE[aria-label$=Video]", "A video file in the main view."],
+            ["PREVIEW_POPUP", "[role=dialog]", "Preview pop-up (for viewing images, etc.)."]
+          ],
+          "customStyles":
+          [
+            null,
+            "INVERT(body > *:not(PREVIEW_POPUP))",
+            "/* Improve icon visibility. */",
+            "body > *:not(PREVIEW_POPUP) svg { filter: none; }",
+            "/* Quick Access: do not uninvert thumbnails of documents. */",
+            "QA_DOC_FILE THUMBNAIL { filter: none; }",
+            "/* Files: only uninvert thumbnails of images and videos. */",
+            "MAIN_FILE THUMBNAIL { filter: none; }",
+            "MAIN_IMAGE_FILE THUMBNAIL, MAIN_VIDEO_FILE THUMBNAIL { filter: INVERT; }"
+          ]
+        }
+      ]
+    }
+  ]
+}

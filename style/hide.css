@@ -1,0 +1,5 @@
+/* Hide the document body. */
+
+body {
+  visibility: hidden !important;
+}

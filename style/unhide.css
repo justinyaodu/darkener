@@ -1,0 +1,6 @@
+/* Unhide the document body. */
+
+/* Use a more specific selector to override hide.css. */
+html body {
+  visibility: visible !important;
+}

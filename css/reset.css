@@ -1,0 +1,54 @@
+/* CSS reset. Based on:
+ * https://meyerweb.com/eric/tools/css/reset
+ */
+
+html, body,
+address, article, aside, footer, header, main, nav, section,
+h1, h2, h3, h4, h5, h6, hgroup,
+blockquote, div, figcaption, figure, hr, p, pre,
+dl, dt, dd, ol, ul, li,
+table, caption, thead, tbody, tfoot, tr, th, td,
+a, abbr, b, br, cite, code, del, dfn, em, i, ins, kbd, mark,
+q, ruby, s, samp, small, span, strong, sub, sup, time, u, var,
+audio, img, video,
+canvas, embed, iframe, object, picture {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Box sizing with inheritance. Credit:
+ * https://css-tricks.com/box-sizing
+ */
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}

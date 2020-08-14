@@ -1,0 +1,64 @@
+@import url('reset.css');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Source+Sans+Pro:wght@300&family=Noto+Sans:wght@400&display=swap');
+
+:root {
+  --spacing: 1rem;
+}
+
+body {
+  color: white;
+  background-color: black;
+
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+
+  line-height: 2;
+
+  padding: var(--spacing);
+}
+
+h1, h2, h3, h4, h5, h6, p, textarea, button {
+  margin-bottom: var(--spacing);
+}
+
+/* Remove unnecessary bottom margin from last child. */
+body > *:last-child {
+  margin-bottom: 0;
+}
+
+h1 { font-size: 3.0518rem; }
+h2 { font-size: 2.4414rem; }
+h3 { font-size: 1.9531rem; }
+h4 { font-size: 1.5625rem; }
+h5 { font-size: 1.2500rem; }
+h6 { font-size: 1.0000rem; }
+
+h2, h3, h4, h5, h6 {
+  /* Top padding proportional to heading font size. */
+  padding-top: 0.5em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  /* Use a light font. */
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 300;
+
+  /* Reduce line height, since there is already padding. */
+  line-height: 1;
+}
+
+button {
+  width: min-content;
+}
+
+label {
+  font: caption;
+}
+
+textarea {
+  color: inherit;
+  background-color: inherit;
+  border: 1px solid;
+  padding: 0.25rem;
+}
