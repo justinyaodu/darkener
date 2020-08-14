@@ -97,7 +97,7 @@
           [
             "PREVIEW img { filter: none; }",
             "/* Sometimes the height is set to 0px, or the width doesn't update on window resize. */",
-            "html, body { width: 100% !important; height: 100% !important;",
+            "html, body { width: 100% !important; height: 100% !important; }",
             "/* Uninvert the map when in satellite view. */",
             "APP_SATELLITE MAP { filter: INVERT; }",
             "SEARCH_ICON { filter: none; }"
