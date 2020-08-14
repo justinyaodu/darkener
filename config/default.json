@@ -159,7 +159,10 @@
             ["POPUP", "[role=menu][aria-haspopup=true]", "Popup menu (for font selection, color, etc.)."],
             ["LISTBOX", "[role=listbox]", "Recipient suggestion listbox."],
             ["QUICK_SETTINGS", ".IU.nn", "Quick settings sidebar."],
-            ["ACCOUNT_MENU", "[aria-label=\"Account Information\"]", "Accounts menu in top right."]
+            ["ACCOUNT_MENU", "[aria-label=\"Account Information\"]", "Accounts menu in top right."],
+            ["SIDEBAR_CONTAINER", ".brB-brH.brC-avC-J4-avO[role=tabpanel]", "Containers for calendar, notes, etc. in right sidebar."],
+            ["SIDEBAR_LOADING_HEADER", ".brC-brG-avC.brC-brG-avC-bta-atM", "Header displayed before sidebar iframe loads."],
+            ["SIDEBAR_LOADING_MAIN", "SIDEBAR_CONTAINER :nth-child(2) :nth-child(2)", "Loading screen for sidebar iframe."]
           ],
           "customStyles":
           [
@@ -171,7 +174,9 @@
             "POPUP { filter: INVERT; }",
             "INVERT(LISTBOX)",
             "INVERT(QUICK_SETTINGS)",
-            "INVERT(ACCOUNT_MENU)"
+            "INVERT(ACCOUNT_MENU)",
+            "SIDEBAR_LOADING_HEADER { filter: INVERT; }",
+            "INVERT(SIDEBAR_LOADING_MAIN)"
           ]
         }
       ]
