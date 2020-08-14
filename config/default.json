@@ -146,6 +146,33 @@
             "MAIN_FILE THUMBNAIL { filter: none; }",
             "MAIN_IMAGE_FILE THUMBNAIL, MAIN_VIDEO_FILE THUMBNAIL { filter: INVERT; }"
           ]
+        },
+        {
+          "regex": "^https://mail\\.google\\.com",
+          "comment": "Enable Gmail's dark theme as well.",
+          "macros":
+          [
+            ["LOADING", "#loading", "Loading screen."],
+            ["MAIL", "[role=main]:not(.BltHke)", "Mail contents."],
+            ["COMPOSE", ".aaZ", "Compose window."],
+            ["COMPOSE_CONTENT", ".aoI", "Compose window contents."],
+            ["POPUP", "[role=menu][aria-haspopup=true]", "Popup menu (for font selection, color, etc.)."],
+            ["LISTBOX", "[role=listbox]", "Recipient suggestion listbox."],
+            ["QUICK_SETTINGS", ".IU.nn", "Quick settings sidebar."],
+            ["ACCOUNT_MENU", "[aria-label=\"Account Information\"]", "Accounts menu in top right."]
+          ],
+          "customStyles":
+          [
+            null,
+            "INVERT(LOADING)",
+            "INVERT(MAIL)",
+            "BLACK(COMPOSE)",
+            "INVERT(COMPOSE_CONTENT)",
+            "POPUP { filter: INVERT; }",
+            "INVERT(LISTBOX)",
+            "INVERT(QUICK_SETTINGS)",
+            "INVERT(ACCOUNT_MENU)"
+          ]
         }
       ]
     }
