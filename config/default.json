@@ -210,7 +210,7 @@
       ],
       "customStyles":
       [
-        "BLACK(body)",
+        "BLACK(html)",
         ":root { --dkn-dcontrast: 0.95; }",
         "INVERT_DCONTRAST(CONTAINER > :not(FOOTER))",
         "/* Preserve header icon contrast. */",
