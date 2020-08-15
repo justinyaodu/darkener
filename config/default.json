@@ -25,6 +25,11 @@
       "Invert the selected elements. Also uninvert any nested iframes, images, and videos."
     ],
     [
+      "UNINVERT",
+      "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: none; }",
+      "Undo an INVERT on a parent element."
+    ],
+    [
       "INVERT_DCONTRAST",
       "ARG_1 { filter: INVERT DCONTRAST; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }"
     ]
@@ -194,6 +199,22 @@
             "APP_ICON { filter: INVERT; }"
           ]
         }
+      ]
+    },
+    {
+      "regex": "https://developer\\.mozilla\\.org",
+      "macros":
+      [
+        ["CONTAINER", "#react-container"],
+        ["FOOTER", "#nav-footer"]
+      ],
+      "customStyles":
+      [
+        "BLACK(body)",
+        ":root { --dkn-dcontrast: 0.95; }",
+        "INVERT_DCONTRAST(CONTAINER > :not(FOOTER))",
+        "/* Preserve header icon contrast. */",
+        "header svg { filter: none !important; }"
       ]
     }
   ]
