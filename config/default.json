@@ -195,7 +195,7 @@
           [
             "/* Do not set black background: preserve iframe transparency. */",
             null,
-            "INVERT(BODY)",
+            "INVERT(body)",
             "APP_ICON { filter: INVERT; }"
           ]
         }
