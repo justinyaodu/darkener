@@ -230,6 +230,24 @@
         "BLACK(body)",
         "INVERT(body > :not(TOP_BAR):not(SIGN_UP_BANNER):not(COOKIE_BANNER))"
       ]
+    },
+    {
+      "regex": "^https://[^.]+\\.wikipedia.org",
+      "macros":
+      [
+        ["HEADER", "#mw-page-base"],
+        ["MATH", ".mwe-math-element"]
+      ],
+      "customStyles":
+      [
+        "BLACK(html)",
+        ":root { --dkn-dcontrast: 0.95; }",
+        "INVERT_DCONTRAST(body)",
+        "/* Do not uninvert equations. */",
+        "MATH img { filter: none; }",
+        "/* Fix inconsistent background in left sidebar. */",
+        "body, HEADER { background: transparent; }"
+      ]
     }
   ]
 }
