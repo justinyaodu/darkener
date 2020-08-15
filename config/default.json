@@ -216,6 +216,20 @@
         "/* Preserve header icon contrast. */",
         "header svg { filter: none !important; }"
       ]
+    },
+    {
+      "regex": "^https://([^/]+\\.stackexchange.com|askubuntu\\.com|mathoverflow\\.net|stackoverflow\\.com|superuser\\.com)",
+      "macros":
+      [
+        ["TOP_BAR", ".top-bar"],
+        ["SIGN_UP_BANNER", ".js-dismissable-hero"],
+        ["COOKIE_BANNER", "#js-gdpr-consent-banner"]
+      ],
+      "customStyles":
+      [
+        "BLACK(body)",
+        "INVERT(body > :not(TOP_BAR):not(SIGN_UP_BANNER):not(COOKIE_BANNER))"
+      ]
     }
   ]
 }
