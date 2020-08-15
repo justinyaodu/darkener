@@ -248,6 +248,13 @@
         "/* Fix inconsistent background in left sidebar. */",
         "body, HEADER { background: transparent; }"
       ]
-    }
+    },
+    {"regex": "^https://bugzilla\\.mozilla\\.org"},
+    {"regex": "^https://www\\.facebook\\.com"},
+    {"regex": "^https://imgur\\.com"},
+    {"regex": "^https://www\\.netflix\\.com"},
+    {"regex": "^https://www\\.reddit\\.com"},
+    {"regex": "^https://app\\.slack\\.com"},
+    {"regex": "^https://www\\.youtube\\.com"}
   ]
 }
