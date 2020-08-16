@@ -59,6 +59,33 @@
       ]
     },
     {
+      "regex": "^https://www\\.desmos\\.com/calculator",
+      "macros":
+      [
+        ["GRAPH_BACKGROUND", ".dcg-sliding-interior"],
+        ["GRAPH_CONTAINER", "#graph-container"],
+        ["SIDEBAR", "#mygraphs-container", "Graphs sidebar on left side."],
+        ["SIDEBAR_PREVIEW", ".graph-preview"],
+        ["THUMBNAIL", ".dcg-thumb"],
+        ["MODAL_SAVE", ".dcg-state-modals", "Save modal dialog (click graph name while logged in)."],
+        ["MODAL_OTHER", ".dcg-shared-modal", "Other modal dialogs (e.g. login)."],
+        ["HEADER", "#dcg-header-container"],
+        ["POPOVER", ".dcg-popover", "Popover menus (e.g. top right header buttons, + button at top left of expression sidebar)."],
+        ["GRAPH_FILTER", "--dkn-dcontrast: 0.95; filter: INVERT DCONTRAST saturate(1.5);"]
+      ],
+      "customStyles":
+      [
+        "GRAPH_CONTAINER, SIDEBAR_PREVIEW, SIDEBAR THUMBNAIL { GRAPH_FILTER }",
+        "/* When top left menu is active, opacity of graph screen is decreased: darken background. */",
+        "BLACK(GRAPH_BACKGROUND)",
+        "INVERT(HEADER POPOVER)",
+        "INVERT(MODAL_SAVE)",
+        "INVERT(MODAL_OTHER)",
+        "/* Disable animation so that modals are inverted immediately. */",
+        "MODAL_SAVE, MODAL_OTHER { animation: none !important; }"
+      ]
+    },
+    {
       "regex": "^https://github\\.com",
       "macros":
       [
