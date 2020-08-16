@@ -245,17 +245,38 @@
       ]
     },
     {
-      "regex": "^https://([^/]+\\.stackexchange.com|askubuntu\\.com|mathoverflow\\.net|stackoverflow\\.com|superuser\\.com)",
+      "regex": "^https://([^/]+\\.stackexchange.com|askubuntu\\.com|mathoverflow\\.net|(meta\\.)?stackoverflow\\.com|superuser\\.com)",
       "macros":
       [
         ["TOP_BAR", ".top-bar"],
+        ["TOP_BAR_DIALOG", ".topbar-dialog"],
         ["SIGN_UP_BANNER", ".js-dismissable-hero"],
-        ["COOKIE_BANNER", "#js-gdpr-consent-banner"]
+        ["COOKIE_BANNER", "#js-gdpr-consent-banner"],
+        ["FOOTER", "#footer"],
+        ["INVERT_COMMON", ":not(COOKIE_BANNER)"]
       ],
       "customStyles":
       [
         "BLACK(body)",
-        "INVERT(body > :not(TOP_BAR):not(SIGN_UP_BANNER):not(COOKIE_BANNER))"
+        "INVERT(body > TO_INVERT)"
+      ],
+      "rules":
+      [
+        {
+          "regex": "^https://(meta\\.)?stackoverflow\\.com",
+          "customStyles":
+          [
+            "INVERT(body > INVERT_COMMON:not(FOOTER))"
+          ]
+        },
+        {
+          "regex": "",
+          "customStyles":
+          [
+            "INVERT(body > INVERT_COMMON:not(SIGN_UP_BANNER):not(TOP_BAR))",
+            "INVERT(TOP_BAR_DIALOG)"
+          ]
+        }
       ]
     },
     {
