@@ -21,12 +21,6 @@
   },
 
   "web_accessible_resources": [
-    "style/invert.css",
-    "style/invert-all.css",
-    "style/html-black.css",
-    "style/html-white.css",
-    "style/body-black.css",
-    "style/body-white.css",
     "style/hide.css",
     "style/unhide.css",
     "config/default.json"
