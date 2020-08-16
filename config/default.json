@@ -257,8 +257,7 @@
       ],
       "customStyles":
       [
-        "BLACK(body)",
-        "INVERT(body > TO_INVERT)"
+        "BLACK(body)"
       ],
       "rules":
       [
