@@ -284,6 +284,62 @@ dknConfig.validateTemplates = function(templates) {
 }
 
 /**
+ * Expand the macros in the provided text.
+ */
+dknConfig.expandMacros = function(text, macros) {
+  for (let i = macros.length - 1; i >= 0; i--) {
+    const name = macros[i][0];
+    const value = macros[i][1];
+    text = text.replaceAll(name, value);
+  }
+
+  return text;
+}
+
+/**
+ * Expand a template using the provided arguments.
+ */
+dknConfig.expandTemplate = function(template, args) {
+  const macros = [];
+
+  for (let i = 0; i < args.length; i++) {
+    macros.push([`ARG_${i + 1}`, args[i]]);
+  }
+
+  return dknConfig.expandMacros(template, macros);
+}
+
+/**
+ * Recursively expand macros and templates.
+ */
+dknConfig.expand = function(value, macros, templates) {
+  if (typeof value === "string") {
+    return dknConfig.expandMacros(text, macros);
+  } else if (Array.isArray(value)) {
+    const templateName = value[0];
+    const template = templates[templateName];
+
+    if (template === undefined) {
+      throw `[0]: template '${templateName}' is not defined.`;
+    }
+
+    const args = [];
+
+    for (let i = 1; i < value.length; i++) {
+      try {
+        args.push(dknConfig.expand(value[i], macros, templates));
+      } catch (error) {
+        throw `[${i}]` + error;
+      }
+    }
+
+    return dknConfig.expandTemplate(template, args);
+  } else {
+    throw `: must be a string or an array.`;
+  }
+}
+
+/**
  * Given a website URL, return the computed rule from matching all rules against
  * it. Nested rules override their parents.
  */
