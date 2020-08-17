@@ -25,6 +25,7 @@ dknPage.addStyleSheet = function(styleSheet, register = true) {
   if (register) {
     dknPage.styleSheets.push(styleSheet);
   }
+
   document.head.appendChild(styleSheet);
 }
 
@@ -36,6 +37,7 @@ dknPage.setStyleSheetEnabled = function(styleSheet, enabled) {
     case "LINK":
       styleSheet.disabled = !enabled;
       break;
+
     case "STYLE":
       // (Ab)use media queries to enable/disable the stylesheet.
       styleSheet.media = enabled ? "all" : "not all";
@@ -47,43 +49,53 @@ dknPage.setStyleSheetEnabled = function(styleSheet, enabled) {
  * Inject and enable all of the styles for this page.
  */
 dknPage.initializeStyles = function() {
-  // Link the static stylesheets specified by the rule.
+  dknPage.initializeStaticStyles();
+  dknPage.initializeCustomStyles();
+  dknPage.initializeDynamicStyles();
+}
+
+dknPage.initializeStaticStyles = function() {
   for (const staticStyle of dknPage.rule.staticStyles) {
     dknPage.addStyleSheet(dknPage.createCssLink(staticStyle));
   }
+}
 
-  // Inject the custom CSS into a style element.
+dknPage.initializeCustomStyles = function() {
   const customStyles = document.createElement("style");
   customStyles.textContent = dknPage.rule.customStyles.join('\n');
   dknPage.addStyleSheet(customStyles);
+}
 
-  if (dknPage.rule.dynamicStyles.length > 0) {
-    dknPage.dynamicStyles = []
-    for (const dynamicStyleName of dknPage.rule.dynamicStyles) {
-      dknPage.dynamicStyles.push(dknDynamic[dynamicStyleName]);
-    }
+dknPage.initializeDynamicStyles = function() {
+  if (dknPage.rule.dynamicStyles.length == 0) return;
 
-    // Create a stylesheet which is modified by dynamic styles.
-    dknPage.dynamicStyleSheet = document.createElement("style");
-    dknPage.addStyleSheet(dknPage.dynamicStyleSheet);
-
-    // Apply dynamic styles to all nodes which are added later.
-    const observer = new MutationObserver((mutations, observer) => {
-      for (const mutation of mutations) {
-        for (const addedNode of mutation.addedNodes) {
-          dknPage.applyDynamicStyles(addedNode);
-        }
-      }
-    });
-    const observeOptions = {
-      childList: true,
-      subtree: true
-    };
-    observer.observe(document.body, observeOptions);
-
-    // Apply custom styles to all nodes which are currently present.
-    dknPage.applyDynamicStyles(document.body);
+  dknPage.dynamicStyles = [];
+  for (const dynamicStyleName of dknPage.rule.dynamicStyles) {
+    dknPage.dynamicStyles.push(dknDynamic[dynamicStyleName]);
   }
+
+  // Create a stylesheet which is modified by dynamic styles.
+  dknPage.dynamicStyleSheet = document.createElement("style");
+  dknPage.addStyleSheet(dknPage.dynamicStyleSheet);
+
+  // Apply dynamic styles to all nodes which are added later.
+  const observer = new MutationObserver((mutations, observer) => {
+    for (const mutation of mutations) {
+      for (const addedNode of mutation.addedNodes) {
+        dknPage.applyDynamicStyles(addedNode);
+      }
+    }
+  });
+
+  const observeOptions = {
+    childList: true,
+    subtree: true
+  };
+
+  observer.observe(document.body, observeOptions);
+
+  // Apply custom styles to all nodes which are currently present.
+  dknPage.applyDynamicStyles(document.body);
 }
 
 /**

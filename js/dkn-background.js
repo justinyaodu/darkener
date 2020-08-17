@@ -19,28 +19,29 @@ dknBackground.messageHandler = function(message, sender, sendResponse) {
           success: false,
           message: "Could not save configuration: no data provided."
         });
-      } else {
-        try {
-          dknConfig.saveConfigString(message.data);
-        } catch (error) {
-          return Promise.resolve({
-            success: false,
-            message: String(error)
-          });
-        }
+      }
+
+      try {
+        dknConfig.saveConfigString(message.data);
+      } catch (error) {
         return Promise.resolve({
-          success: true,
-          message: "Configuration saved."
+          success: false,
+          message: String(error)
         });
       }
+
+      return Promise.resolve({
+        success: true,
+        message: "Configuration saved."
+      });
       break;
 
     case "getComputedRule":
       return dknConfig.getComputedRule(message.data)
-          .then(rule => ({
-            success: true,
-            data: rule
-          }));
+        .then(rule => ({
+          success: true,
+          data: rule
+        }));
       break;
   }
 }
