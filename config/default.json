@@ -25,6 +25,10 @@
       "Set the background of the selected elements to white."
     ],
     [
+      "FILTER_NONE",
+      "ARG_1 { filter: none !important; }"
+    ],
+    [
       "INVERT",
       "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }",
       "Invert the selected elements. Also uninvert any nested iframes, images, and videos."
@@ -198,8 +202,8 @@
             ["THUMBNAIL", "img[src^=\"https://lh3.google.com\"]", "File preview thumbnails."],
             ["QA_DOC_FILE", ".g5SSAf", "Non-image file in Quick Access."],
             ["MAIN_FILE", "div[role=gridcell]", "A file in the main view."],
-            ["MAIN_IMAGE_FILE", "MAIN_FILE[aria-label$=Image]", "An image file in the main view."],
-            ["MAIN_VIDEO_FILE", "MAIN_FILE[aria-label$=Video]", "A video file in the main view."],
+            ["MAIN_IMAGE_FILE", "[aria-label$=Image]", "An image file in the main view."],
+            ["MAIN_VIDEO_FILE", "[aria-label$=Video]", "A video file in the main view."],
             ["PREVIEW_POPUP", ".a-b-ja-el-db", "Preview pop-up (for viewing images, etc.)."],
             ["UNDO_POPUP", ".g-Yd-Na", "Popup at bottom left to undo previous action (e.g. moving a file)."],
             ["RIGHT_CLICK_MENU", "[role=menu]"]
@@ -209,13 +213,11 @@
             null,
             "INVERT(body > *:not(PREVIEW_POPUP):not(UNDO_POPUP))",
             "/* Improve icon visibility. */",
-            "body > *:not(PREVIEW_POPUP) svg { filter: none; }",
+            "FILTER_NONE(body > *:not(PREVIEW_POPUP) svg)",
             "/* Quick Access: do not uninvert thumbnails of documents. */",
-            "QA_DOC_FILE THUMBNAIL { filter: none; }",
+            "FILTER_NONE(QA_DOC_FILE THUMBNAIL)",
             "/* Files: only uninvert thumbnails of images and videos. */",
-            "MAIN_FILE THUMBNAIL { filter: none; }",
-            "MAIN_IMAGE_FILE THUMBNAIL, MAIN_VIDEO_FILE THUMBNAIL { filter: INVERT; }",
-            "RIGHT_CLICK_MENU svg { filter: none !important; }"
+            "FILTER_NONE(MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL)"
           ]
         },
         {
