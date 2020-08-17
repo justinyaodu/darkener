@@ -20,6 +20,11 @@
       "Set the background of the selected elements to black."
     ],
     [
+      "WHITE",
+      "ARG_1 { background: white !important; }",
+      "Set the background of the selected elements to white."
+    ],
+    [
       "INVERT",
       "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }",
       "Invert the selected elements. Also uninvert any nested iframes, images, and videos."
@@ -139,19 +144,22 @@
           "regex": "^https://docs\\.google\\.com/(document|presentation|spreadsheets|forms)",
           "macros":
           [
-            ["TEMPLATES", ".docs-homescreen-templates-templateview-preview", "Document template preview bar."]
+            ["TEMPLATES", ".docs-homescreen-templates-templateview-preview", "Document template preview bar."],
+            ["MODAL_BG", ".modal-dialog-bg", "Overlay when modal dialogs (e.g. Sheets resize column) are active."]
           ],
           "customStyles":
           [
             "/* Do not uninvert document template preview images. */",
-            "TEMPLATES img { filter: none; }"
+            "TEMPLATES img { filter: none; }",
+            "/* Keep the overlay black after inverting. */",
+            "WHITE(MODAL_BG)"
           ],
           "rules":
           [
             {
               "regex": "^https://docs\\.google\\.com/forms",
               "comment": "Set a white background, which is inverted to black.",
-              "customStyles": ["body { background: white !important; }"]
+              "customStyles": ["WHITE(body)"]
             }
           ]
         },
