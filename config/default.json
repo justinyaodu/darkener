@@ -157,8 +157,11 @@
           [
             {
               "regex": "^https://docs\\.google\\.com/forms",
-              "comment": "Set a white background, which is inverted to black.",
-              "customStyles": ["WHITE(body)"]
+              "customStyles":
+              [
+                "/* Set a white background, which is inverted to black. */",
+                "WHITE(body)"
+              ]
             },
             {
               "regex": "^https://docs\\.google\\.com/presentation",
