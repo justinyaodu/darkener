@@ -60,7 +60,7 @@
       [
         "BLACK(body)",
         "/* Header's siblings: children of container on main page, children of body on bestsellers page. */",
-        "INVERT(HEADER ~ *:not(FOOTER))",
+        "INVERT(HEADER ~ :not(FOOTER))",
         "INVERT(HMENU)",
         "SEARCH_BOX, SEARCH_DROPDOWN { filter: INVERT; }",
         "INVERT(FLYOUTS)",
@@ -106,7 +106,7 @@
       [
         "BLACK(body)",
         ":root { --dkn-dcontrast: 0.98; }",
-        "INVERT_DCONTRAST(body > *:not(HEADER))",
+        "INVERT_DCONTRAST(body > :not(HEADER))",
         "INVERT(HEADER DROPDOWN)",
         "/*",
         "Header search box uses inline !important styles, which can't be overridden.",
@@ -206,18 +206,20 @@
             ["MAIN_VIDEO_FILE", "[aria-label$=Video]", "A video file in the main view."],
             ["PREVIEW_POPUP", ".a-b-ja-el-db", "Preview pop-up (for viewing images, etc.)."],
             ["UNDO_POPUP", ".g-Yd-Na", "Popup at bottom left to undo previous action (e.g. moving a file)."],
-            ["RIGHT_CLICK_MENU", "[role=menu]"]
+            ["RIGHT_CLICK_MENU", "[role=menu]"],
+            ["SIDEBAR_ICON", ".Yb-Il-d-c-j", "Icons for apps in right sidebar."]
           ],
           "customStyles":
           [
             null,
-            "INVERT(body > *:not(PREVIEW_POPUP):not(UNDO_POPUP))",
+            "INVERT(body > :not(PREVIEW_POPUP):not(UNDO_POPUP))",
             "/* Improve icon visibility. */",
-            "FILTER_NONE(body > *:not(PREVIEW_POPUP) svg)",
+            "FILTER_NONE(body > :not(PREVIEW_POPUP) svg)",
             "/* Quick Access: do not uninvert thumbnails of documents. */",
             "FILTER_NONE(QA_DOC_FILE THUMBNAIL)",
             "/* Files: only uninvert thumbnails of images and videos. */",
-            "FILTER_NONE(MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL)"
+            "FILTER_NONE(MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL)",
+            "SIDEBAR_ICON { filter: INVERT; }"
           ]
         },
         {
