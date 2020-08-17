@@ -145,14 +145,16 @@
           "macros":
           [
             ["TEMPLATES", ".docs-homescreen-templates-templateview-preview", "Document template preview bar."],
-            ["MODAL_BG", ".modal-dialog-bg", "Overlay when modal dialogs (e.g. Sheets resize column) are active."]
+            ["MODAL_BG", ".modal-dialog-bg", "Overlay when modal dialogs (e.g. Sheets resize column) are active."],
+            ["EXPLORE_BUTTON", ".docs-explore-widget", "Explore button in bottom right."]
           ],
           "customStyles":
           [
             "/* Do not uninvert document template preview images. */",
             "TEMPLATES img { filter: none; }",
             "/* Keep the overlay black after inverting. */",
-            "WHITE(MODAL_BG)"
+            "WHITE(MODAL_BG)",
+            "EXPLORE_BUTTON svg { filter: none; }"
           ],
           "rules":
           [
@@ -160,6 +162,20 @@
               "regex": "^https://docs\\.google\\.com/forms",
               "comment": "Set a white background, which is inverted to black.",
               "customStyles": ["WHITE(body)"]
+            },
+            {
+              "regex": "^https://docs\\.google\\.com/presentation",
+              "macros":
+              [
+                ["FILMSTRIP", ".punch-filmstrip-thumbnails", "Left sidebar with slide thumbnails."],
+                ["FILMSTRIP_CONTROLS", ".punch-filmstrip-controls", "Buttons at bottom of left sidebar."],
+                ["SPEAKER_NOTES", "#speakernotes-workspace"]
+              ],
+              "customStyles":
+              [
+                "FILMSTRIP { filter: none; }",
+                "FILMSTRIP_CONTROLS svg, SPEAKER_NOTES svg { filter: none; }"
+              ]
             }
           ]
         },
