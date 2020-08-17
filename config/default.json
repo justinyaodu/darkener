@@ -145,15 +145,12 @@
           "macros":
           [
             ["TEMPLATES", ".docs-homescreen-templates-templateview-preview", "Document template preview bar."],
-            ["MODAL_BG", ".modal-dialog-bg", "Overlay when modal dialogs (e.g. Sheets resize column) are active."],
             ["EXPLORE_BUTTON", ".docs-explore-widget", "Explore button in bottom right."]
           ],
           "customStyles":
           [
             "/* Do not uninvert document template preview images. */",
             "TEMPLATES img { filter: none; }",
-            "/* Keep the overlay black after inverting. */",
-            "WHITE(MODAL_BG)",
             "EXPLORE_BUTTON svg { filter: none; }"
           ],
           "rules":
@@ -175,6 +172,18 @@
               [
                 "FILMSTRIP { filter: none; }",
                 "FILMSTRIP_CONTROLS svg, SPEAKER_NOTES svg { filter: none; }"
+              ]
+            },
+            {
+              "regex": "^https://docs\\.google\\.com/spreadsheets",
+              "macros":
+              [
+                ["MODAL_BG", ".modal-dialog-bg", "Overlay when modal dialogs (e.g. Sheets resize column) are active."]
+              ],
+              "customStyles":
+              [
+                "/* Keep the overlay black after inverting. */",
+                "WHITE(MODAL_BG)"
               ]
             }
           ]
