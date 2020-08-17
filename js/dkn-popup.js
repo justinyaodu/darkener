@@ -8,6 +8,7 @@ const dknPopup = {};
  */
 dknPopup.enabled = async function(value) {
   let enabled = false;
+
   try {
     enabled = await browser.tabs.sendMessage(
         dknPopup.activeTab.id, {type: "enabled", value: value});
@@ -16,6 +17,7 @@ dknPopup.enabled = async function(value) {
     // on this page.
     dknPopup.enabledCheckbox.disabled = true;
   }
+
   dknPopup.enabledCheckbox.checked = enabled;
 }
 

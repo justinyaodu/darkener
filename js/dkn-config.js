@@ -14,14 +14,14 @@ dknConfig.loadConfig = async function() {
  * Load the configuration from local storage as a JSON string.
  */
 dknConfig.loadConfigString = async function() {
-  dknConfig.configString =
-      (await browser.storage.local.get("config")).config;
+  dknConfig.configString = (await browser.storage.local.get("config")).config;
 
-  if (dknConfig.configString === undefined)
+  if (dknConfig.configString === undefined) {
     // Use the default configuration.
-    dknConfig.configString =
-        await window.fetch(browser.runtime.getURL("config/default.json"))
-        .then((response) => response.text());
+    dknConfig.configString = await
+        window.fetch(browser.runtime.getURL("config/default.json"))
+          .then((response) => response.text());
+  }
 }
 
 /**
@@ -31,7 +31,7 @@ dknConfig.loadConfigString = async function() {
 dknConfig.saveConfigString = function(config) {
   dknConfig.validateConfigString(config);
   browser.storage.local.set({config: config})
-      .then(() => dknConfig.loadConfig());
+    .then(() => dknConfig.loadConfig());
 }
 
 /**
@@ -43,12 +43,13 @@ dknConfig.validateConfigString = function(configString) {
 
   try {
     dknConfig.validateObject(config,
-        {
-          macros: macros => dknConfig.validateMacros(macros),
-          templates: templates => dknConfig.validateTemplates(templates),
-          rules: rules => dknConfig.validateRules(rules)
-        },
-        ["macros", "templates", "rules"]);
+      {
+        macros: macros => dknConfig.validateMacros(macros),
+        templates: templates => dknConfig.validateTemplates(templates),
+        rules: rules => dknConfig.validateRules(rules)
+      },
+      ["macros", "templates", "rules"]
+    );
   } catch (error) {
     throw 'config' + error;
   }
@@ -85,7 +86,7 @@ dknConfig.validateObject = function(obj, validators, required = []) {
   }
 
   for (const key of Object.getOwnPropertyNames(obj)) {
-    let validator = validators[key];
+    const validator = validators[key];
 
     if (validator === undefined)
       throw `: invalid key name "${key}". Valid key names are: `
@@ -132,18 +133,15 @@ dknConfig.validateStringArray = function(arr) {
 dknConfig.validateRule = function(rule) {
   dknConfig.validateObject(rule,
     {
-      comment: comment => {},
-      regex: regex => dknConfig.validateRegex(regex),
-      customStyles: styles => dknConfig.validateArray(styles,
-          dknConfig.validateCustomStyle),
-      dynamicStyles: styles => dknConfig.validateArray(styles,
-          dknConfig.validateDynamicStyle),
-      staticStyles: styles => dknConfig.validateArray(styles,
-          dknConfig.validateStaticStyle),
-      enabled: enabled => dknConfig.validateEnabled(enabled),
-      macros: macros => dknConfig.validateMacros(macros),
-      templates: templates => dknConfig.validateTemplates(templates),
-      rules: rules => dknConfig.validateRules(rules)
+      comment:       comment => {},
+      regex:         dknConfig.validateRegex,
+      customStyles:  dknConfig.validateCustomStyles,
+      dynamicStyles: dknConfig.validateDynamicStyles,
+      staticStyles:  dknConfig.validateStaticStyles,
+      enabled:       dknConfig.validateEnabled,
+      macros:        dknConfig.validateMacros,
+      templates:     dknConfig.validateTemplates,
+      rules:         dknConfig.validateRules
     },
     ["regex"]
   );
@@ -181,6 +179,10 @@ dknConfig.validateCustomStyle = function(customStyle) {
     throw ": must be a string or null.";
 }
 
+dknConfig.validateCustomStyles = function(customStyles) {
+  dknConfig.validateArray(customStyles, dknConfig.validateCustomStyle);
+}
+
 // Get the names of the available dynamic style functions.
 dknConfig.dynamicStyles = [null].concat(Object.keys(dknDynamic));
 
@@ -188,14 +190,20 @@ dknConfig.validateDynamicStyle = function(dynamicStyle) {
   dknConfig.validateIncludes(dknConfig.dynamicStyles, dynamicStyle);
 }
 
+dknConfig.validateDynamicStyles = function(dynamicStyles) {
+  dknConfig.validateArray(dynamicStyles, dknConfig.validateDynamicStyle);
+}
+
 // Parse manifest.json to get the names of the static styles.
 window.fetch(browser.runtime.getURL("manifest.json"))
   .then((response) => response.json())
   .then((manifest) => {
     dknConfig.staticStyles = [null];
+
     for (const cssPath of manifest.web_accessible_resources) {
       // Add all CSS file names.
       const match = /^style\/(.*)\.css$/.exec(cssPath);
+
       if (match !== null) {
         dknConfig.staticStyles.push(match[1]);
       }
@@ -204,6 +212,10 @@ window.fetch(browser.runtime.getURL("manifest.json"))
 
 dknConfig.validateStaticStyle = function(staticStyle) {
   dknConfig.validateIncludes(dknConfig.staticStyles, staticStyle);
+}
+
+dknConfig.validateStaticStyles = function(staticStyles) {
+  dknConfig.validateArray(staticStyles, dknConfig.validateStaticStyle);
 }
 
 dknConfig.validateIncludes = function(array, element) {
@@ -218,6 +230,7 @@ dknConfig.validateIncludes = function(array, element) {
  */
 dknConfig.prettyArray = function(array) {
   const strings = [];
+
   for (const element of array) {
     if (element === null) {
       strings.push("null");
@@ -225,6 +238,7 @@ dknConfig.prettyArray = function(array) {
       strings.push(`"${element}"`);
     }
   }
+
   return strings.join(", ");
 }
 
@@ -318,8 +332,7 @@ dknConfig.getComputedRule = async function(url) {
  * Apply the first matching rule of the rules array to the computed rule.
  */
 dknConfig.mergeRulesRecursive = function(computedRule, rules, url) {
-  if (rules === undefined)
-    return;
+  if (rules === undefined) return;
 
   for (const rule of rules) {
     if (RegExp(rule.regex).test(url)) {
