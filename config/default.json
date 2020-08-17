@@ -200,19 +200,22 @@
             ["MAIN_FILE", "div[role=gridcell]", "A file in the main view."],
             ["MAIN_IMAGE_FILE", "MAIN_FILE[aria-label$=Image]", "An image file in the main view."],
             ["MAIN_VIDEO_FILE", "MAIN_FILE[aria-label$=Video]", "A video file in the main view."],
-            ["PREVIEW_POPUP", "[role=dialog]", "Preview pop-up (for viewing images, etc.)."]
+            ["PREVIEW_POPUP", ".a-b-ja-el-db", "Preview pop-up (for viewing images, etc.)."],
+            ["UNDO_POPUP", ".g-Yd-Na", "Popup at bottom left to undo previous action (e.g. moving a file)."],
+            ["RIGHT_CLICK_MENU", "[role=menu]"]
           ],
           "customStyles":
           [
             null,
-            "INVERT(body > *:not(PREVIEW_POPUP))",
+            "INVERT(body > *:not(PREVIEW_POPUP):not(UNDO_POPUP))",
             "/* Improve icon visibility. */",
             "body > *:not(PREVIEW_POPUP) svg { filter: none; }",
             "/* Quick Access: do not uninvert thumbnails of documents. */",
             "QA_DOC_FILE THUMBNAIL { filter: none; }",
             "/* Files: only uninvert thumbnails of images and videos. */",
             "MAIN_FILE THUMBNAIL { filter: none; }",
-            "MAIN_IMAGE_FILE THUMBNAIL, MAIN_VIDEO_FILE THUMBNAIL { filter: INVERT; }"
+            "MAIN_IMAGE_FILE THUMBNAIL, MAIN_VIDEO_FILE THUMBNAIL { filter: INVERT; }",
+            "RIGHT_CLICK_MENU svg { filter: none !important; }"
           ]
         },
         {
