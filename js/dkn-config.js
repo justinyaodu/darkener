@@ -312,7 +312,7 @@ dknConfig.expandTemplate = function(template, args) {
 /**
  * Recursively expand macros and templates.
  */
-dknConfig.expand = function(value, macros, templates) {
+dknConfig.expandValue = function(value, macros, templates) {
   if (typeof value === "string") {
     return dknConfig.expandMacros(text, macros);
   } else if (Array.isArray(value)) {
@@ -337,6 +337,72 @@ dknConfig.expand = function(value, macros, templates) {
   } else {
     throw `: must be a string or an array.`;
   }
+}
+
+dknConfig.processRule = function(rule, inherited) {
+  // Assign default values to undefined attributes.
+  rule = Object.assign({
+    comment: "",
+    level: inherited.level,
+    macros: [],
+    templates: {},
+    staticStyles: [],
+    dynamicStyles: [],
+    customStyles: [],
+    rules: [],
+  }, rule);
+
+  // TODO rule validation
+
+  // Inherit macros and templates.
+  rule.macros = inherited.macros.concat(rule.macros);
+  rule.templates = Object.assign({}, inherited.templates, rule.templates);
+
+  // Inherit styles.
+  for (const key of ["staticStyles", "dynamicStyles", "customStyles"]) {
+    let arr = inherited[key].slice();
+
+    for (const element of rule[key]) {
+      if (element === null) {
+        arr = [];
+      } else {
+        arr.push(element);
+      }
+    }
+
+    rule[key] = arr;
+  }
+
+  // Expand macros and templates in custom styles.
+  rule.customStyles = rule.customStyles.map(
+    (style) => dknConfig.expandValue(style, rule.macros, rule.templates)
+  );
+
+  // Process all child rules.
+
+  const newRules = [];
+
+  for (let i = 0; i < rule.rules.length; i++) {
+    const child = rules[i];
+
+    try {
+      for (const newRule of dknConfig.processRule(child, rule)) {
+        newRules.push(newRule);
+      }
+    } catch (error) {
+      throw `[${i}]` + error;
+    }
+  }
+
+  rule.rules = newRules;
+
+  // Macro and template definitions no longer needed.
+  delete rule.macros;
+  delete rule.templates;
+
+  // If this rule was only used to define common macros, styles, etc.,
+  // flatten the tree by returning this node's children.
+  return (rule.regex === undefined) ? rule.rules : [rule];
 }
 
 /**
