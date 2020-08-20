@@ -102,7 +102,8 @@
       [
         ["HEADER", ".js-header-wrapper"],
         ["DROPDOWN", ".dropdown-menu"],
-        ["HEADER_SEARCH", ".header-search"]
+        ["HEADER_SEARCH", ".header-search"],
+        ["CONTRIB_CALENDAR", ".js-calendar-graph-svg"]
       ],
       "customStyles":
       [
@@ -114,7 +115,8 @@
         "Header search box uses inline !important styles, which can't be overridden.",
         "It also can't be properly inverted when unfocused, since it is partly transparent.",
         "*/",
-        "HEADER_SEARCH[aria-expanded=true] { filter: INVERT; z-index: 9999; }"
+        "HEADER_SEARCH[aria-expanded=true] { filter: INVERT; z-index: 9999; }",
+        ["FILTER_NONE", "CONTRIB_CALENDAR"]
       ]
     },
     {
