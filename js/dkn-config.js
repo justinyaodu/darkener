@@ -7,54 +7,10 @@ const dknConfig = {};
  */
 dknConfig.ConfigSource = class {
   /**
-   * Return a Promise resolving to the cached config string.
-   */
-  async getConfigString() {
-    if (this.configString === undefined) {
-      this.configString = await this.loadConfigString();
-    }
-
-    return this.configString;
-  }
-
-  /**
    * Return a Promise resolving to the stored config string.
    */
   async loadConfigString() {
     return "{}";
-  }
-
-  /**
-   * Return a Promise resolving to the processed configuration.
-   */
-  async getConfig() {
-    if (this.config !== undefined) {
-      return this.config;
-    } else if (this.configError !== undefined) {
-      throw this.configError;
-    }
-
-    try {
-      const configString = await this.getConfigString();
-      return this.config = dknConfig.parseConfigString(configString);
-    } catch (error) {
-      throw this.configError = error;
-    }
-  }
-
-  /**
-   * Parse a config string, save it, and return the updated config. If the
-   * given config string is invalid, the previous config is retained.
-   */
-  async setConfigString(configString) {
-    const newConfig = dknConfig.parseConfigString(configString);
-
-    this.saveConfigString(configString);
-
-    this.config = newConfig;
-    delete this.configError;
-
-    return this.config;
   }
 
   /**
@@ -104,53 +60,66 @@ dknConfig.FileConfigSource = class extends dknConfig.ConfigSource {
   }
 }
 
-/**
- * Use the best of the available configuration sources.
- */
-dknConfig.MultiConfigSource = class extends dknConfig.ConfigSource {
-  constructor(...sources) {
-    super();
-    this.sources = sources;
-  }
-
-  async getConfig() {
-    for (const source of this.sources) {
-      try {
-        return await source.getConfig();
-      } catch (error) {
-        // Try the next source.
-      }
-    }
-  }
-
-  async getConfigString() {
-    for (const source of this.sources) {
-      try {
-        return await source.getConfigString();
-      } catch (error) {
-        // Try the next source.
-      }
-    }
-  }
-
-  async setConfigString(configString) {
-    for (const source of this.sources) {
-      try {
-        await source.setConfigString(configString);
-      } catch (error) {
-        // Try the next source.
-      }
-    }
-  }
-}
-
-dknConfig.configSource = new dknConfig.MultiConfigSource(
+// Configuration sources, ordered in decreasing priority.
+dknConfig.configSources = [
   new dknConfig.StorageConfigSource(browser.storage.local),
   new dknConfig.FileConfigSource("config/default.json"),
   // Shouldn't ever be used, unless the default config file is broken.
   new dknConfig.ConfigSource()
-);
+];
 
+/**
+ * Return a Promise resolving to the highest priority config string.
+ */
+dknConfig.getConfigString = async function() {
+  for (const configSource of dknConfig.configSources) {
+    try {
+      return await configSource.loadConfigString();
+    } catch (error) {
+      // Try the next source.
+    }
+  }
+}
+
+/**
+ * Return a Promise resolving to the current config object.
+ */
+dknConfig.getConfig = async function() {
+  if (dknConfig.config === undefined) {
+    for (const configSource of dknConfig.configSources) {
+      try {
+        dknConfig.config = dknConfig.parseConfigString(
+            await configSource.loadConfigString());
+        break;
+      } catch (error) {
+        // Try the next source.
+      }
+    }
+  }
+
+  return dknConfig.config;
+}
+
+/**
+ * Save a config string, returning a Promise which resolves upon completion.
+ */
+dknConfig.setConfigString = async function(configString) {
+  const newConfig = dknConfig.parseConfigString(configString);
+
+  for (const configSource of dknConfig.configSources) {
+    try {
+      await configSource.saveConfigString(configString);
+      dknConfig.config = newConfig;
+      break;
+    } catch (error) {
+      // Try the next source.
+    }
+  }
+}
+
+/**
+ * Parse a config string into a config object.
+ */
 dknConfig.parseConfigString = function(configString) {
   let parsed;
   try {
@@ -566,7 +535,7 @@ dknConfig.processRule = function(rule, parentRule) {
 dknConfig.getProcessedRule = async function(url, rule = null) {
   const rules = rule !== null
       ? rule.rules
-      : await dknConfig.configSource.getConfig();
+      : await dknConfig.getConfig();
 
   for (const child of rules) {
     if (child.regex.test(url)) {

@@ -12,11 +12,11 @@ dknBackground.onRejected = function(error) {
 dknBackground.messageHandler = function(message, sender, sendResponse) {
   switch (message.type) {
     case "getConfigString":
-      return dknConfig.configSource.getConfigString()
+      return dknConfig.getConfigString()
         .then((configString) => ({configString, success: true}))
         .catch(dknBackground.onRejected);
     case "setConfigString":
-      return dknConfig.configSource.setConfigString(message.configString)
+      return dknConfig.setConfigString(message.configString)
         .then((config) => ({success: true}))
         .catch(dknBackground.onRejected);
     case "getComputedRule":
