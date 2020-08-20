@@ -231,29 +231,40 @@
           [
             ["LOADING", "#loading", "Loading screen."],
             ["MAIL", "[role=main]:not(.BltHke)", "Mail contents."],
-            ["COMPOSE", ".aaZ", "Compose window."],
-            ["COMPOSE_CONTENT", ".aoI", "Compose window contents."],
-            ["POPUP", "[role=menu][aria-haspopup=true]", "Popup menu (for font selection, color, etc.)."],
-            ["LISTBOX", "[role=listbox]", "Recipient suggestion listbox."],
+            ["COMPOSE_WINDOW", ".aaZ", "Standalone compose window."],
+            ["COMPOSE_CONTENT", ".M9 > .aoI", "Mail compose contents."],
+            ["POPUP_MENU", "[role=menu][aria-haspopup=true]", "Popup menu (for font selection, color, etc.)."],
+            ["LISTBOX", "[role=listbox][aria-expanded=true]", "Recipient suggestion listbox."],
+            ["LISTBOX_IMG", "LISTBOX [style^=background-image]", "Recipient profile pictures."],
             ["QUICK_SETTINGS", ".IU.nn", "Quick settings sidebar."],
             ["ACCOUNT_MENU", "[aria-label=\"Account Information\"]", "Accounts menu in top right."],
             ["SIDEBAR_CONTAINER", ".brB-brH.brC-avC-J4-avO[role=tabpanel]", "Containers for calendar, notes, etc. in right sidebar."],
             ["SIDEBAR_LOADING_HEADER", ".brC-brG-avC.brC-brG-avC-bta-atM", "Header displayed before sidebar iframe loads."],
-            ["SIDEBAR_LOADING_MAIN", "SIDEBAR_CONTAINER :nth-child(2) :nth-child(2)", "Loading screen for sidebar iframe."]
+            ["SIDEBAR_LOADING_MAIN", "SIDEBAR_CONTAINER :nth-child(2) :nth-child(2)", "Loading screen for sidebar iframe."],
+            ["BUTTON_ICON", "[role=button] img", "Button icons (e.g. reply button at top right of mail)."],
+            ["UNDO_POPUP", ".b8.UC :nth-child(1) :nth-child(2)", "Undo popup (e.g. after discarding a draft)"],
+            ["SEARCH_ACTIVE", "#aso_search_form_anchor.gb_bf", "Search bar and dropdown list when active."]
           ],
           "customStyles":
           [
             null,
             ["INVERT", "LOADING"],
             ["INVERT", "MAIL"],
-            ["BLACK", "COMPOSE"],
-            ["INVERT", "COMPOSE_CONTENT"],
-            "POPUP { filter: INVERT; }",
+            ["BLACK", "COMPOSE_WINDOW"],
+            "/* Only invert standalone compose windows (replies are inverted by the parent MAIL). */",
+            ["INVERT", "COMPOSE_WINDOW > COMPOSE_CONTENT"],
+            "POPUP_MENU { filter: INVERT; }",
+            "/* Do not invert menus which are already inverted by MAIL. */",
+            "MAIL POPUP_MENU { filter: none; }",
             ["INVERT", "LISTBOX"],
+            "LISTBOX_IMG { filter: INVERT; }",
             ["INVERT", "QUICK_SETTINGS"],
             ["INVERT", "ACCOUNT_MENU"],
             "SIDEBAR_LOADING_HEADER { filter: INVERT; }",
-            ["INVERT", "SIDEBAR_LOADING_MAIN"]
+            ["INVERT", "SIDEBAR_LOADING_MAIN"],
+            ["FILTER_NONE", "BUTTON_ICON"],
+            ["INVERT", "UNDO_POPUP"],
+            ["INVERT", "SEARCH_ACTIVE"]
           ]
         },
         {
