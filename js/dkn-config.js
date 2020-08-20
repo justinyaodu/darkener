@@ -151,57 +151,6 @@ dknConfig.configSource = new dknConfig.MultiConfigSource(
   new dknConfig.ConfigSource()
 );
 
-///**
-// * Load the configuration from local storage.
-// */
-//dknConfig.loadConfig = async function() {
-//  await dknConfig.loadConfigString();
-//  dknConfig.config = dknConfig.processConfig(JSON.parse(dknConfig.configString));
-//  // TODO
-//}
-//
-///**
-// * Load the configuration from local storage as a JSON string.
-// */
-//dknConfig.loadConfigString = async function() {
-//  dknConfig.configString = (await browser.storage.local.get("config")).config;
-//
-//  if (dknConfig.configString === undefined) {
-//    // Use the default configuration.
-//    dknConfig.configString = await
-//        window.fetch(browser.runtime.getURL("config/default.json"))
-//          .then((response) => response.text());
-//  }
-//}
-//
-///**
-// * Save the configuration to local storage as a JSON string. Throws an exception
-// * if the configuration string is invalid.
-// */
-//dknConfig.saveConfigString = function(config) {
-//  dknConfig.validateConfigString(config);
-//  browser.storage.local.set({config: config})
-//    .then(() => dknConfig.loadConfig());
-//}
-//
-///**
-// * Validate a JSON string specifying the style rules, throwing an appropriate
-// * exception on failure.
-// */
-//dknConfig.validateConfigString = function(configString) {
-//  const config = JSON.parse(configString);
-//
-//  try {
-//    dknConfig.validateObject(config, {
-//      macros: macros => dknConfig.validateMacros(macros),
-//      templates: templates => dknConfig.validateTemplates(templates),
-//      // rules: rules => dknConfig.validateRules(rules)
-//    });
-//  } catch (error) {
-//    throw 'config' + error;
-//  }
-//}
-
 dknConfig.parseConfigString = function(configString) {
   let parsed;
   try {
@@ -236,14 +185,6 @@ dknConfig.loadStyleNames = async function() {
 
   dknConfig.dynamicStyles = [null].concat(Object.keys(dknDynamic));
 }
-
-//// Parse manifest.json to get the names of the static styles.
-//window.fetch(browser.runtime.getURL("manifest.json"))
-//  .then((response) => response.json())
-//  .then((manifest) => {
-//  });
-//
-//// Get the names of the available dynamic style functions.
 
 /**
  * Validate each key of an object, given a dictionary which maps key names to
@@ -321,24 +262,6 @@ dknConfig.assertNonEmptyString = function(value) {
     throw ": string must not be empty.";
   }
 }
-
-//dknConfig.validateRegex = function(regex) {
-//  try {
-//    switch (typeof regex) {
-//      case "string":
-//        break;
-//      case "undefined":
-//        throw "not defined.";
-//      default:
-//        throw "must be a string.";
-//    }
-//
-//    // Make sure that the regular expression is valid.
-//    RegExp(regex);
-//  } catch (error) {
-//    throw ": " + error;
-//  }
-//}
 
 dknConfig.validateCustomStyle = function(customStyle, topLevel = true) {
   if (typeof customStyle === "string") {
@@ -646,7 +569,6 @@ dknConfig.getProcessedRule = async function(url, rule = null) {
       : await dknConfig.configSource.getConfig();
 
   for (const child of rules) {
-    console.log(`Testing '${url}' with regex '${child.regex}'`); // TODO
     if (child.regex.test(url)) {
       return dknConfig.getProcessedRule(url, child);
     }
@@ -656,94 +578,6 @@ dknConfig.getProcessedRule = async function(url, rule = null) {
   delete toReturn.regex;
   return toReturn;
 }
-
-///**
-// * Given a website URL, return the computed rule from matching all rules against
-// * it. Nested rules override their parents.
-// */
-//dknConfig.getComputedRule = async function(url) {
-//  const computedRule = {
-//    enabled: true,
-//    customStyles: [],
-//    dynamicStyles: [],
-//    staticStyles: [],
-//    macros: [].concat(dknConfig.config.macros),
-//    templates: [].concat(dknConfig.config.templates)
-//  };
-//
-//  dknConfig.mergeRulesRecursive(computedRule, dknConfig.config.rules, url);
-//
-//  // Perform function expansion on custom styles.
-//  for (const template of computedRule.templates.reverse()) {
-//    const templateName = template[0];
-//    const templateExpand = template[1];
-//    for (let i = 0; i < computedRule.customStyles.length; i++) {
-//      const customStyle = computedRule.customStyles[i];
-//      if (customStyle.startsWith(templateName)
-//          && customStyle[templateName.length] === '('
-//          && customStyle[customStyle.length - 1] === ')') {
-//        computedRule.customStyles[i] = templateExpand.replaceAll("ARG_1",
-//            customStyle.substring(templateName.length + 1, customStyle.length - 1));
-//      }
-//    }
-//  }
-//
-//  // Perform macro expansion on custom styles.
-//  for (const macro of computedRule.macros.reverse()) {
-//    for (let i = 0; i < computedRule.customStyles.length; i++) {
-//      computedRule.customStyles[i] =
-//          computedRule.customStyles[i].replaceAll(macro[0], macro[1]);
-//    }
-//  }
-//
-//  delete computedRule.templates;
-//  delete computedRule.macros;
-//
-//  return computedRule;
-//}
-//
-///**
-// * Apply the first matching rule of the rules array to the computed rule.
-// */
-//dknConfig.mergeRulesRecursive = function(computedRule, rules, url) {
-//  if (rules === undefined) return;
-//
-//  for (const rule of rules) {
-//    if (RegExp(rule.regex).test(url)) {
-//      dknConfig.mergeRules(computedRule, rule);
-//      dknConfig.mergeRulesRecursive(computedRule, rule.rules, url);
-//      return;
-//    }
-//  }
-//}
-//
-///**
-// * Merge properties from a matching rule into the computed rule.
-// */
-//dknConfig.mergeRules = function(computedRule, rule) {
-//  for (const property of Object.keys(rule)) {
-//    switch (property) {
-//      case "customStyles":
-//      case "dynamicStyles":
-//      case "staticStyles":
-//      case "macros":
-//      case "templates":
-//        let values = rule[property];
-//        for (const value of values) {
-//          if (value === null) {
-//            computedRule[property] = [];
-//          } else {
-//            computedRule[property].push(value);
-//          }
-//        }
-//        break;
-//
-//      case "enabled":
-//        computedRule[property] = rule[property];
-//        break;
-//    }
-//  }
-//}
 
 dknConfig.init = async function() {
   await dknConfig.loadStyleNames();
