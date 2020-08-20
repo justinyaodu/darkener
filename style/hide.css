@@ -1,5 +1,12 @@
 /* Hide the document body. */
 
-body {
-  visibility: hidden !important;
+html::after {
+  position: fixed;
+  z-index: 2100000000;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  content: "";
+  background: rgba(0, 0, 0, 0.8);
 }
