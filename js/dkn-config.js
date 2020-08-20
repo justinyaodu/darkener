@@ -388,11 +388,12 @@ dknConfig.expandValue = function(value, macros, templates) {
     return dknConfig.expandMacros(value, macros);
   } else if (Array.isArray(value)) {
     const templateName = value[0];
-    const template = templates[templateName].template;
 
-    if (template === undefined) {
+    if (templates[templateName] === undefined) {
       throw `[0]: template '${templateName}' is not defined.`;
     }
+
+    const template = templates[templateName].template;
 
     const args = [];
 
