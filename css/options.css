@@ -25,8 +25,8 @@ body {
 }
 
 /* Status message colors. */
-.status-success { color: lime; }
-.status-error   { color: red;  }
+#status-message { color: lime; }
+#status-message.status-error { color: red; }
 
 /* Show messages on the left and cursor position on the right. */
 #status-bar {

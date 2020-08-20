@@ -197,14 +197,12 @@ dknPage.applyDynamicStylesInner = function(node) {
 }
 
 dknPage.main = async function() {
-  const reply = await browser.runtime.sendMessage({
+  dknPage.rule = await browser.runtime.sendMessage({
     type: "getComputedRule",
-    data: window.location.href
+    url: window.location.href
   });
 
-  dknPage.rule = reply.data;
-
-  dknPage.setEnabled(dknPage.rule.enabled);
+  dknPage.setEnabled(dknPage.rule.level >= 5);
 
   // Unhide content now that styles are loaded. Do not register this stylesheet
   // (or the page would disappear when the user turns dark mode off).

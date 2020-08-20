@@ -10,15 +10,13 @@ dknOptions.saveButton    = document.getElementById("save");
 /**
  * Set the status message text and color from the background script reply.
  */
-dknOptions.setStatus = function(reply) {
-  dknOptions.statusMessage.textContent = reply.message;
+dknOptions.setStatus = function(text, isError) {
+  dknOptions.statusMessage.textContent = text;
 
-  if (reply.success) {
-    dknOptions.statusMessage.classList.remove("status-error");
-    dknOptions.statusMessage.classList.add("status-success");
-  } else {
-    dknOptions.statusMessage.classList.remove("status-success");
+  if (isError) {
     dknOptions.statusMessage.classList.add("status-error");
+  } else {
+    dknOptions.statusMessage.classList.remove("status-error");
   }
 }
 
@@ -51,16 +49,27 @@ dknOptions.updateCursorPos = function() {
 dknOptions.main = function() {
   // Load the user's rules into the JSON editing area.
   browser.runtime.sendMessage({type: "getConfigString"})
-    .then(reply => {
-      dknOptions.editArea.value = reply.data;
-      dknOptions.setStatus(reply);
+    .then((reply) => {
+      if (reply.success) {
+        dknOptions.editArea.value = reply.configString;
+        dknOptions.setStatus("Configuration loaded.", false);
+      } else {
+        dknOptions.setStatus("Failed to load configuration: " + reply.error,
+            true);
+      }
     });
 
   // Save the user's rules when the Save button is clicked.
   dknOptions.saveButton.onclick = function() {
     browser.runtime.sendMessage(
-        {type: "setConfigString", data: dknOptions.editArea.value})
-      .then(reply => dknOptions.setStatus(reply));
+        {type: "setConfigString", configString: dknOptions.editArea.value})
+      .then((reply) => {
+        if (reply.success) {
+          dknOptions.setStatus("Configuration saved.", false);
+        } else {
+          dknOptions.setStatus(reply.error, true);
+        }
+      });
   };
 
   // Update the cursor position when a key is pressed or the mouse is clicked in
