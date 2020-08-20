@@ -108,7 +108,7 @@
       [
         ["BLACK", "body"],
         ":root { --dkn-dcontrast: 0.98; }",
-        "INVERT_DCONTRAST(body > *:not(HEADER))",
+        ["INVERT_DCONTRAST", "body > *:not(HEADER)"],
         ["INVERT", "HEADER DROPDOWN"],
         "/*",
         "Header search box uses inline !important styles, which can't be overridden.",
@@ -215,11 +215,11 @@
             null,
             ["INVERT", "body > *:not(PREVIEW_POPUP):not(UNDO_POPUP)"],
             "/* Improve icon visibility. */",
-            "FILTER_NONE(body > *:not(PREVIEW_POPUP) svg)",
+            ["FILTER_NONE", "body > *:not(PREVIEW_POPUP) svg"],
             "/* Quick Access: do not uninvert thumbnails of documents. */",
-            "FILTER_NONE(QA_DOC_FILE THUMBNAIL)",
+            ["FILTER_NONE", "QA_DOC_FILE THUMBNAIL"],
             "/* Files: only uninvert thumbnails of images and videos. */",
-            "FILTER_NONE(MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL)"
+            ["FILTER_NONE", "MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL"]
           ]
         },
         {
@@ -282,7 +282,7 @@
       [
         ["BLACK", "html"],
         ":root { --dkn-dcontrast: 0.95; }",
-        "INVERT_DCONTRAST(CONTAINER > :not(FOOTER))",
+        ["INVERT_DCONTRAST", "CONTAINER > :not(FOOTER)"],
         "/* Preserve header icon contrast. */",
         "header svg { filter: none !important; }"
       ]
@@ -332,7 +332,7 @@
       [
         ["BLACK", "html"],
         ":root { --dkn-dcontrast: 0.95; }",
-        "INVERT_DCONTRAST(body)",
+        ["INVERT_DCONTRAST", "body"],
         "/* Do not uninvert equations. */",
         "MATH img { filter: none; }",
         "/* Fix inconsistent background in left sidebar. */",
