@@ -2,5 +2,9 @@
 
 /* Use a more specific selector to override hide.css. */
 :root::after {
-  content: none;
+  visibility: hidden;
+  opacity: 0;
+  transition-property: opacity, visibility;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
 }
