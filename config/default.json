@@ -13,36 +13,38 @@
     ]
   ],
   "templates":
-  [
-    [
-      "BLACK",
-      "ARG_1 { background: black !important; }",
-      "Set the background of the selected elements to black."
-    ],
-    [
-      "WHITE",
-      "ARG_1 { background: white !important; }",
-      "Set the background of the selected elements to white."
-    ],
-    [
-      "FILTER_NONE",
-      "ARG_1 { filter: none !important; }"
-    ],
-    [
-      "INVERT",
-      "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }",
-      "Invert the selected elements. Also uninvert any nested iframes, images, and videos."
-    ],
-    [
-      "UNINVERT",
-      "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: none; }",
-      "Undo an INVERT on a parent element."
-    ],
-    [
-      "INVERT_DCONTRAST",
-      "ARG_1 { filter: INVERT DCONTRAST; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }"
-    ]
-  ],
+  {
+    "BLACK":
+    {
+      "template": "ARG_1 { background: black !important; }"
+    },
+    "WHITE":
+    {
+      "template": "ARG_1 { background: white !important; }"
+    },
+    "FILTER_NONE":
+    {
+      "template": "ARG_1 { filter: none !important; }"
+    },
+    "INVERT":
+    {
+      "template": "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }",
+      "comment": "Invert the selected elements. Also uninvert any nested iframes, images, and videos."
+    },
+    "INVERT_DCONTRAST":
+    {
+      "template": "ARG_1 { filter: INVERT DCONTRAST; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }"
+    },
+    "UNINVERT":
+    {
+      "template": "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: none; }",
+      "comment": "Undo an INVERT on a parent element."
+    },
+    "INVERT_DCONTRAST":
+    {
+      "template": "ARG_1 { filter: INVERT DCONTRAST; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }"
+    }
+  },
   "rules":
   [
     {
@@ -58,12 +60,12 @@
       ],
       "customStyles":
       [
-        "BLACK(body)",
+        ["BLACK", "body"],
         "/* Header's siblings: children of container on main page, children of body on bestsellers page. */",
-        "INVERT(HEADER ~ :not(FOOTER))",
-        "INVERT(HMENU)",
+        ["INVERT", "HEADER ~ *:not(FOOTER)"],
+        ["INVERT", "HMENU"],
         "SEARCH_BOX, SEARCH_DROPDOWN { filter: INVERT; }",
-        "INVERT(FLYOUTS)",
+        ["INVERT", "FLYOUTS"],
         "FOOTER { --dkn-dcontrast: 1.2; filter: DCONTRAST; }"
       ]
     },
@@ -86,10 +88,10 @@
       [
         "GRAPH_CONTAINER, SIDEBAR_PREVIEW, SIDEBAR THUMBNAIL { GRAPH_FILTER }",
         "/* When top left menu is active, opacity of graph screen is decreased: darken background. */",
-        "BLACK(GRAPH_BACKGROUND)",
-        "INVERT(HEADER POPOVER)",
-        "INVERT(MODAL_SAVE)",
-        "INVERT(MODAL_OTHER)",
+        ["BLACK", "GRAPH_BACKGROUND"],
+        ["INVERT", "HEADER POPOVER"],
+        ["INVERT", "MODAL_SAVE"],
+        ["INVERT", "MODAL_OTHER"],
         "/* Disable animation so that modals are inverted immediately. */",
         "MODAL_SAVE, MODAL_OTHER { animation: none !important; }"
       ]
@@ -104,10 +106,10 @@
       ],
       "customStyles":
       [
-        "BLACK(body)",
+        ["BLACK", "body"],
         ":root { --dkn-dcontrast: 0.98; }",
-        "INVERT_DCONTRAST(body > :not(HEADER))",
-        "INVERT(HEADER DROPDOWN)",
+        "INVERT_DCONTRAST(body > *:not(HEADER))",
+        ["INVERT", "HEADER DROPDOWN"],
         "/*",
         "Header search box uses inline !important styles, which can't be overridden.",
         "It also can't be properly inverted when unfocused, since it is partly transparent.",
@@ -119,8 +121,8 @@
       "regex": "^https://[^/]+\\.google\\.com",
       "customStyles":
       [
-        "BLACK(html)",
-        "INVERT(body)"
+        ["BLACK", "html"],
+        ["INVERT", "body"]
       ],
       "rules":
       [
@@ -164,7 +166,7 @@
               "customStyles":
               [
                 "/* Set a white background, which is inverted to black. */",
-                "WHITE(body)"
+                ["WHITE", "body"]
               ]
             },
             {
@@ -190,7 +192,7 @@
               "customStyles":
               [
                 "/* Keep the overlay black after inverting. */",
-                "WHITE(MODAL_BG)"
+                ["WHITE", "MODAL_BG"]
               ]
             }
           ]
@@ -206,20 +208,18 @@
             ["MAIN_VIDEO_FILE", "[aria-label$=Video]", "A video file in the main view."],
             ["PREVIEW_POPUP", ".a-b-ja-el-db", "Preview pop-up (for viewing images, etc.)."],
             ["UNDO_POPUP", ".g-Yd-Na", "Popup at bottom left to undo previous action (e.g. moving a file)."],
-            ["RIGHT_CLICK_MENU", "[role=menu]"],
-            ["SIDEBAR_ICON", ".Yb-Il-d-c-j", "Icons for apps in right sidebar."]
+            ["RIGHT_CLICK_MENU", "[role=menu]"]
           ],
           "customStyles":
           [
             null,
-            "INVERT(body > :not(PREVIEW_POPUP):not(UNDO_POPUP))",
+            ["INVERT", "body > *:not(PREVIEW_POPUP):not(UNDO_POPUP)"],
             "/* Improve icon visibility. */",
-            "FILTER_NONE(body > :not(PREVIEW_POPUP) svg)",
+            "FILTER_NONE(body > *:not(PREVIEW_POPUP) svg)",
             "/* Quick Access: do not uninvert thumbnails of documents. */",
             "FILTER_NONE(QA_DOC_FILE THUMBNAIL)",
             "/* Files: only uninvert thumbnails of images and videos. */",
-            "FILTER_NONE(MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL)",
-            "SIDEBAR_ICON { filter: INVERT; }"
+            "FILTER_NONE(MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL)"
           ]
         },
         {
@@ -242,16 +242,16 @@
           "customStyles":
           [
             null,
-            "INVERT(LOADING)",
-            "INVERT(MAIL)",
-            "BLACK(COMPOSE)",
-            "INVERT(COMPOSE_CONTENT)",
+            ["INVERT", "LOADING"],
+            ["INVERT", "MAIL"],
+            ["BLACK", "COMPOSE"],
+            ["INVERT", "COMPOSE_CONTENT"],
             "POPUP { filter: INVERT; }",
-            "INVERT(LISTBOX)",
-            "INVERT(QUICK_SETTINGS)",
-            "INVERT(ACCOUNT_MENU)",
+            ["INVERT", "LISTBOX"],
+            ["INVERT", "QUICK_SETTINGS"],
+            ["INVERT", "ACCOUNT_MENU"],
             "SIDEBAR_LOADING_HEADER { filter: INVERT; }",
-            "INVERT(SIDEBAR_LOADING_MAIN)"
+            ["INVERT", "SIDEBAR_LOADING_MAIN"]
           ]
         },
         {
@@ -265,7 +265,7 @@
           [
             "/* Do not set black background: preserve iframe transparency. */",
             null,
-            "INVERT(body)",
+            ["INVERT", "body"],
             "APP_ICON { filter: INVERT; }"
           ]
         }
@@ -280,7 +280,7 @@
       ],
       "customStyles":
       [
-        "BLACK(html)",
+        ["BLACK", "html"],
         ":root { --dkn-dcontrast: 0.95; }",
         "INVERT_DCONTRAST(CONTAINER > :not(FOOTER))",
         "/* Preserve header icon contrast. */",
@@ -300,7 +300,7 @@
       ],
       "customStyles":
       [
-        "BLACK(body)"
+        ["BLACK", "body"]
       ],
       "rules":
       [
@@ -308,15 +308,15 @@
           "regex": "^https://(meta\\.)?stackoverflow\\.com",
           "customStyles":
           [
-            "INVERT(body > INVERT_COMMON:not(FOOTER))"
+            ["INVERT", "body > INVERT_COMMON:not(FOOTER)"]
           ]
         },
         {
           "regex": "",
           "customStyles":
           [
-            "INVERT(body > INVERT_COMMON:not(SIGN_UP_BANNER):not(TOP_BAR))",
-            "INVERT(TOP_BAR_DIALOG)"
+            ["INVERT", "body > INVERT_COMMON:not(SIGN_UP_BANNER):not(TOP_BAR)"],
+            ["INVERT", "TOP_BAR_DIALOG"]
           ]
         }
       ]
@@ -330,7 +330,7 @@
       ],
       "customStyles":
       [
-        "BLACK(html)",
+        ["BLACK", "html"],
         ":root { --dkn-dcontrast: 0.95; }",
         "INVERT_DCONTRAST(body)",
         "/* Do not uninvert equations. */",
