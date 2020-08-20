@@ -2,52 +2,30 @@
 
 const dknBackground = {};
 
+dknBackground.onRejected = function(error) {
+  return {
+    success: false,
+    error: String(error)
+  };
+}
+
 dknBackground.messageHandler = function(message, sender, sendResponse) {
   switch (message.type) {
-
     case "getConfigString":
-      return Promise.resolve({
-        success: true,
-        message: "Configuration loaded.",
-        data: dknConfig.configString
-      });
-      break;
-
+      return dknConfig.configSource.getConfigString()
+        .then((configString) => ({configString, success: true}))
+        .catch(dknBackground.onRejected);
     case "setConfigString":
-      if (message.data === undefined) {
-        return Promise.resolve({
-          success: false,
-          message: "Could not save configuration: no data provided."
-        });
-      }
-
-      try {
-        dknConfig.saveConfigString(message.data);
-      } catch (error) {
-        return Promise.resolve({
-          success: false,
-          message: String(error)
-        });
-      }
-
-      return Promise.resolve({
-        success: true,
-        message: "Configuration saved."
-      });
-      break;
-
+      return dknConfig.configSource.setConfigString(message.configString)
+        .then((config) => ({success: true}))
+        .catch(dknBackground.onRejected);
     case "getComputedRule":
-      return dknConfig.getComputedRule(message.data)
-        .then(rule => ({
-          success: true,
-          data: rule
-        }));
-      break;
+      return dknConfig.getProcessedRule(message.url);
   }
 }
 
 dknBackground.main = async function() {
-  await dknConfig.loadConfig();
+  await dknConfig.init();
   browser.runtime.onMessage.addListener(dknBackground.messageHandler);
 }
 
