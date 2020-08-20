@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Darkener",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A highly configurable dark mode extension.",
 
   "browser_specific_settings": {
@@ -21,12 +21,6 @@
   },
 
   "web_accessible_resources": [
-    "style/invert.css",
-    "style/invert-all.css",
-    "style/html-black.css",
-    "style/html-white.css",
-    "style/body-black.css",
-    "style/body-white.css",
     "style/hide.css",
     "style/unhide.css",
     "config/default.json"
