@@ -486,11 +486,6 @@ dknConfig.processRule = function(rule, parentRule) {
     rule.comment = parentRule.comment;
   }
 
-  // Expand macros and templates in custom styles.
-  rule.customStyles = rule.customStyles.map(
-    (style) => dknConfig.expandValue(style, rule.macros, rule.templates)
-  );
-
   // Process all child rules.
 
   const newRules = [];
@@ -508,6 +503,11 @@ dknConfig.processRule = function(rule, parentRule) {
   }
 
   rule.rules = newRules;
+
+  // Expand macros and templates in custom styles.
+  rule.customStyles = rule.customStyles.map(
+    (style) => dknConfig.expandValue(style, rule.macros, rule.templates)
+  );
 
   // Macro and template definitions no longer needed.
   delete rule.macros;
