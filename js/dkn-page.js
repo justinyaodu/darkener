@@ -204,10 +204,6 @@ dknPage.main = async function() {
 
   dknPage.setEnabled(dknPage.rule.level >= 5);
 
-  // Unhide content now that styles are loaded. Do not register this stylesheet
-  // (or the page would disappear when the user turns dark mode off).
-  dknPage.addStyleSheet(dknPage.createCssLink("unhide"), false);
-
   // Handle messages from the popup.
   browser.runtime.onMessage.addListener(dknPage.messageHandler);
 }

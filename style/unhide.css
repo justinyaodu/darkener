@@ -1,6 +1,10 @@
 /* Unhide the document body. */
 
 /* Use a more specific selector to override hide.css. */
-html body {
-  visibility: visible !important;
+:root::after {
+  visibility: hidden;
+  opacity: 0;
+  transition-property: opacity, visibility;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
 }
