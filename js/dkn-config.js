@@ -388,11 +388,12 @@ dknConfig.expandValue = function(value, macros, templates) {
     return dknConfig.expandMacros(value, macros);
   } else if (Array.isArray(value)) {
     const templateName = value[0];
-    const template = templates[templateName].template;
 
-    if (template === undefined) {
+    if (templates[templateName] === undefined) {
       throw `[0]: template '${templateName}' is not defined.`;
     }
+
+    const template = templates[templateName].template;
 
     const args = [];
 
@@ -485,11 +486,6 @@ dknConfig.processRule = function(rule, parentRule) {
     rule.comment = parentRule.comment;
   }
 
-  // Expand macros and templates in custom styles.
-  rule.customStyles = rule.customStyles.map(
-    (style) => dknConfig.expandValue(style, rule.macros, rule.templates)
-  );
-
   // Process all child rules.
 
   const newRules = [];
@@ -507,6 +503,11 @@ dknConfig.processRule = function(rule, parentRule) {
   }
 
   rule.rules = newRules;
+
+  // Expand macros and templates in custom styles.
+  rule.customStyles = rule.customStyles.map(
+    (style) => dknConfig.expandValue(style, rule.macros, rule.templates)
+  );
 
   // Macro and template definitions no longer needed.
   delete rule.macros;

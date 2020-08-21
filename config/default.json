@@ -10,6 +10,11 @@
       "INVERT",
       "invert() hue-rotate(180deg)",
       "Invert brightness while preserving hue."
+    ],
+    [
+      "VAR_INVERT",
+      "var(--dkn-invert, 0)",
+      "1 if the current element is inverted, 0 otherwise."
     ]
   ],
   "templates":
@@ -22,331 +27,438 @@
     {
       "template": "ARG_1 { background: white !important; }"
     },
+    "INVERT":
+    {
+      "template": "ARG_1 { filter: invert(calc(1 - VAR_INVERT)) hue-rotate(calc(180deg * calc(1 - VAR_INVERT))); } ARG_1 > * { --dkn-invert: 1; }",
+      "comment": "Invert brightness for the selected elements, unless a parent element has already been inverted."
+    },
+    "NO_INVERT":
+    {
+      "template": "ARG_1 { filter: invert(VAR_INVERT) hue-rotate(calc(180deg * VAR_INVERT)); } ARG_1 > * { --dkn-invert: 0; }",
+      "comment": "If a parent of this element is inverted, invert this element to restore its original appearance."
+    },
+    "INVERT_DCONTRAST":
+    {
+      "template": "ARG_1 { filter: invert(calc(1 - VAR_INVERT)) hue-rotate(calc(180deg * calc(1 - VAR_INVERT))) DCONTRAST; } ARG_1 > * { --dkn-invert: 1; }",
+      "comment": "Invert brightness and adjust contrast between dark elements at the same time."
+    },
     "FILTER_NONE":
     {
       "template": "ARG_1 { filter: none !important; }"
-    },
-    "INVERT":
-    {
-      "template": "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }",
-      "comment": "Invert the selected elements. Also uninvert any nested iframes, images, and videos."
-    },
-    "INVERT_DCONTRAST":
-    {
-      "template": "ARG_1 { filter: INVERT DCONTRAST; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }"
-    },
-    "UNINVERT":
-    {
-      "template": "ARG_1 { filter: INVERT; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: none; }",
-      "comment": "Undo an INVERT on a parent element."
-    },
-    "INVERT_DCONTRAST":
-    {
-      "template": "ARG_1 { filter: INVERT DCONTRAST; } ARG_1 iframe, ARG_1 img, ARG_1 svg, ARG_1 video { filter: INVERT; }"
     }
   },
   "rules":
   [
     {
-      "regex": "^https://www\\.amazon\\.com",
-      "macros":
-      [
-        ["HEADER", "header"],
-        ["HMENU", "#hmenu-canvas", "Top left hamburger menu."],
-        ["SEARCH_BOX", "#nav-search"],
-        ["SEARCH_DROPDOWN", "#nav-flyout-searchAjax", "Search box dropdown."],
-        ["FLYOUTS", "#nav-flyout-anchor", "Parent element for navbar flyouts."],
-        ["FOOTER", "#navFooter"]
-      ],
+      "comment": "Do not invert iframes, images, and videos, even if their parents are inverted.",
       "customStyles":
       [
-        ["BLACK", "body"],
-        "/* Header's siblings: children of container on main page, children of body on bestsellers page. */",
-        ["INVERT", "HEADER ~ *:not(FOOTER)"],
-        ["INVERT", "HMENU"],
-        "SEARCH_BOX, SEARCH_DROPDOWN { filter: INVERT; }",
-        ["INVERT", "FLYOUTS"],
-        "FOOTER { --dkn-dcontrast: 1.2; filter: DCONTRAST; }"
-      ]
-    },
-    {
-      "regex": "^https://www\\.desmos\\.com/calculator",
-      "macros":
-      [
-        ["GRAPH_BACKGROUND", ".dcg-sliding-interior"],
-        ["GRAPH_CONTAINER", "#graph-container"],
-        ["SIDEBAR", "#mygraphs-container", "Graphs sidebar on left side."],
-        ["SIDEBAR_PREVIEW", ".graph-preview"],
-        ["THUMBNAIL", ".dcg-thumb"],
-        ["MODAL_SAVE", ".dcg-state-modals", "Save modal dialog (click graph name while logged in)."],
-        ["MODAL_OTHER", ".dcg-shared-modal", "Other modal dialogs (e.g. login)."],
-        ["HEADER", "#dcg-header-container"],
-        ["POPOVER", ".dcg-popover", "Popover menus (e.g. top right header buttons, + button at top left of expression sidebar)."],
-        ["GRAPH_FILTER", "--dkn-dcontrast: 0.95; filter: INVERT DCONTRAST saturate(1.5);"]
-      ],
-      "customStyles":
-      [
-        "GRAPH_CONTAINER, SIDEBAR_PREVIEW, SIDEBAR THUMBNAIL { GRAPH_FILTER }",
-        "/* When top left menu is active, opacity of graph screen is decreased: darken background. */",
-        ["BLACK", "GRAPH_BACKGROUND"],
-        ["INVERT", "HEADER POPOVER"],
-        ["INVERT", "MODAL_SAVE"],
-        ["INVERT", "MODAL_OTHER"],
-        "/* Disable animation so that modals are inverted immediately. */",
-        "MODAL_SAVE, MODAL_OTHER { animation: none !important; }"
-      ]
-    },
-    {
-      "regex": "^https://github\\.com",
-      "macros":
-      [
-        ["HEADER", ".js-header-wrapper"],
-        ["DROPDOWN", ".dropdown-menu"],
-        ["HEADER_SEARCH", ".header-search"],
-        ["CONTRIB_CALENDAR", ".js-calendar-graph-svg"]
-      ],
-      "customStyles":
-      [
-        ["BLACK", "body"],
-        ":root { --dkn-dcontrast: 0.98; }",
-        ["INVERT_DCONTRAST", "body > *:not(HEADER)"],
-        ["INVERT", "HEADER DROPDOWN"],
-        "/*",
-        "Header search box uses inline !important styles, which can't be overridden.",
-        "It also can't be properly inverted when unfocused, since it is partly transparent.",
-        "*/",
-        "HEADER_SEARCH[aria-expanded=true] { filter: INVERT; z-index: 9999; }",
-        ["FILTER_NONE", "CONTRIB_CALENDAR"]
-      ]
-    },
-    {
-      "regex": "^https://[^/]+\\.google\\.com",
-      "customStyles":
-      [
-        ["BLACK", "html"],
-        ["INVERT", "body"]
+        ["NO_INVERT", "iframe"],
+        ["NO_INVERT", "img"],
+        ["NO_INVERT", "svg"],
+        ["NO_INVERT", "video"]
       ],
       "rules":
       [
         {
-          "regex": "^https://www\\.google\\.com/maps",
+          "regex": "^https://www\\.amazon\\.com",
           "macros":
           [
-            ["PREVIEW", ".full-screen", "Preview before map finishes loading."],
-            ["APP", "#app-container"],
-            ["APP_SATELLITE", "APP.app-imagery-mode", "App container in satellite view."],
-            ["MAP", "#scene"],
-            ["SEARCH_ICON", ".searchbox-icon"]
+            ["HEADER", "header"],
+            ["HMENU", "#hmenu-canvas", "Top left hamburger menu."],
+            ["SEARCH_BOX", "#nav-search"],
+            ["SEARCH_DROPDOWN", "#nav-flyout-searchAjax", "Search box dropdown."],
+            ["FLYOUTS", "#nav-flyout-anchor", "Parent element for navbar flyouts."],
+            ["FOOTER", "#navFooter"]
           ],
           "customStyles":
           [
-            "PREVIEW img { filter: none; }",
-            "/* Sometimes the height is set to 0px, or the width doesn't update on window resize. */",
-            "html, body { width: 100% !important; height: 100% !important; }",
-            "/* Uninvert the map when in satellite view. */",
-            "APP_SATELLITE MAP { filter: INVERT; }",
-            "SEARCH_ICON { filter: none; }"
+            ["BLACK", "body"],
+            "/* Header's siblings: children of container on main page, children of body on bestsellers page. */",
+            ["INVERT", "HEADER ~ :not(FOOTER)"],
+            ["INVERT", "HMENU"],
+            "SEARCH_BOX, SEARCH_DROPDOWN { filter: INVERT; }",
+            ["INVERT", "FLYOUTS"],
+            "FOOTER { --dkn-dcontrast: 1.2; filter: DCONTRAST; }"
           ]
         },
         {
-          "regex": "^https://docs\\.google\\.com/(document|presentation|spreadsheets|forms)",
+          "regex": "^https://www\\.desmos\\.com/calculator",
           "macros":
           [
-            ["TEMPLATES", ".docs-homescreen-templates-templateview-preview", "Document template preview bar."],
-            ["EXPLORE_BUTTON", ".docs-explore-widget", "Explore button in bottom right."]
+            ["LOADING", ".dcg-loading-div-container", "Loading screen."],
+            ["GRAPH_BACKGROUND", ".dcg-sliding-interior"],
+            ["GRAPH_CONTAINER", "#graph-container"],
+            ["SIDEBAR", "#mygraphs-container", "Graphs sidebar on left side."],
+            ["SIDEBAR_PREVIEW", ".graph-preview"],
+            ["THUMBNAIL", ".dcg-thumb"],
+            ["MODAL_SAVE", ".dcg-state-modals", "Save modal dialog (click graph name while logged in)."],
+            ["MODAL_OTHER", ".dcg-shared-modal", "Other modal dialogs (e.g. login)."],
+            ["HEADER", "#dcg-header-container"],
+            ["POPOVER", ".dcg-popover", "Popover menus (e.g. top right header buttons, + button at top left of expression sidebar)."],
+            ["GRAPH_FILTER", "--dkn-dcontrast: 0.95; filter: INVERT DCONTRAST saturate(1.5);"]
           ],
           "customStyles":
           [
-            "/* Do not uninvert document template preview images. */",
-            "TEMPLATES img { filter: none; }",
-            "EXPLORE_BUTTON svg { filter: none; }"
+            "/* TODO Darken loading screen (currently too slow for it to be styled). */",
+            "GRAPH_CONTAINER, SIDEBAR_PREVIEW, SIDEBAR THUMBNAIL { GRAPH_FILTER }",
+            "/* When top left menu is active, opacity of graph screen is decreased: darken background. */",
+            ["BLACK", "GRAPH_BACKGROUND"],
+            ["INVERT", "HEADER POPOVER"],
+            ["INVERT", "MODAL_SAVE"],
+            ["INVERT", "MODAL_OTHER"],
+            "/* Disable animation so that modals are inverted immediately. */",
+            "MODAL_SAVE, MODAL_OTHER { animation: none !important; }"
+          ]
+        },
+        {
+          "regex": "^https://github\\.com",
+          "macros":
+          [
+            ["HEADER", ".js-header-wrapper"],
+            ["DROPDOWN", ".dropdown-menu"],
+            ["HEADER_SEARCH", ".header-search"],
+            ["CONTRIB_CALENDAR", ".js-calendar-graph-svg"],
+            ["LANGUAGES_BARS", ".Progress-item[itemprop=keywords]", "Bars showing percent of each language used in a repo."]
+          ],
+          "customStyles":
+          [
+            ["BLACK", "body"],
+            ":root { --dkn-dcontrast: 0.98; }",
+            ["INVERT_DCONTRAST", "body > *:not(HEADER)"],
+            ["INVERT", "DROPDOWN"],
+            "/*",
+            "Header search box uses inline !important styles, which can't be overridden.",
+            "It also can't be properly inverted when unfocused, since it is partly transparent.",
+            "*/",
+            "HEADER_SEARCH[aria-expanded=true] { filter: INVERT; z-index: 9999; }",
+            ["INVERT", "CONTRIB_CALENDAR"],
+            ["NO_INVERT", "LANGUAGES_BARS"]
+          ]
+        },
+        {
+          "regex": "^https://[^/]+\\.google\\.com",
+          "customStyles":
+          [
+            ["BLACK", "html"],
+            ["INVERT", "body"]
           ],
           "rules":
           [
             {
-              "regex": "^https://docs\\.google\\.com/forms",
-              "customStyles":
-              [
-                "/* Set a white background, which is inverted to black. */",
-                ["WHITE", "body"]
-              ]
-            },
-            {
-              "regex": "^https://docs\\.google\\.com/presentation",
+              "comment": "Styles for the apps sidebar on the right of Gmail, Docs, Drive, etc.",
               "macros":
               [
-                ["FILMSTRIP", ".punch-filmstrip-thumbnails", "Left sidebar with slide thumbnails."],
-                ["FILMSTRIP_CONTROLS", ".punch-filmstrip-controls", "Buttons at bottom of left sidebar."],
-                ["SPEAKER_NOTES", "#speakernotes-workspace"]
+                ["APPBAR_ICON", ".app-switcher-button-icon-container", "App icons."],
+                ["APPBAR_LOADING_HEADER", ".companion-shell-header", "Header displayed before iframe loads."],
+                ["APPBAR_LOADING_MAIN", ".companion-shell-loading", "Loading screen for iframe."],
+                ["APPBAR_LOADING_GRAPHICS", ".companion-shell-splash-screen-container", "App icon and loading circle."]
               ],
               "customStyles":
               [
-                "FILMSTRIP { filter: none; }",
-                "FILMSTRIP_CONTROLS svg, SPEAKER_NOTES svg { filter: none; }"
+                ["NO_INVERT", "APPBAR_ICON"],
+                ["INVERT", "APPBAR_LOADING_HEADER"],
+                ["INVERT", "APPBAR_LOADING_MAIN"],
+                ["NO_INVERT", "APPBAR_LOADING_GRAPHICS"]
+              ],
+              "rules":
+              [
+                {
+                  "regex": "^https://docs\\.google\\.com",
+                  "macros":
+                  [
+                    ["TEMPLATES", ".docs-homescreen-templates-templateview-preview", "Document template preview bar."],
+                    ["EXPLORE_BUTTON", ".docs-explore-widget", "Explore button in bottom right."]
+                  ],
+                  "customStyles":
+                  [
+                    ["INVERT", "TEMPLATES img"],
+                    ["INVERT", "EXPLORE_BUTTON svg"]
+                  ],
+                  "rules":
+                  [
+                    {
+                      "regex": "^https://docs\\.google\\.com/forms",
+                      "customStyles":
+                      [
+                        "/* Set a white background, which is inverted to black. */",
+                        ["WHITE", "body"]
+                      ]
+                    },
+                    {
+                      "regex": "^https://docs\\.google\\.com/presentation",
+                      "macros":
+                      [
+                        ["FILMSTRIP", ".punch-filmstrip-thumbnails", "Left sidebar with slide thumbnails."],
+                        ["FILMSTRIP_CONTROLS", ".punch-filmstrip-controls", "Buttons at bottom of left sidebar."],
+                        ["SPEAKER_NOTES", "#speakernotes-workspace", "Speaker notes area below each slide."]
+                      ],
+                      "customStyles":
+                      [
+                        ["INVERT", "FILMSTRIP"],
+                        ["INVERT", "FILMSTRIP_CONTROLS svg"],
+                        ["INVERT", "SPEAKER_NOTES svg"]
+                      ]
+                    },
+                    {
+                      "regex": "^https://docs\\.google\\.com/spreadsheets",
+                      "macros":
+                      [
+                        ["MODAL_BG", ".modal-dialog-bg", "Overlay when modal dialogs (e.g. resize column) are active."]
+                      ],
+                      "customStyles":
+                      [
+                        ["NO_INVERT", "MODAL_BG"]
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "regex": "^https://drive\\.google\\.com",
+                  "macros":
+                  [
+                    ["APPBAR_ICON", ".Yb-Il-d-c-j"],
+                    ["APPBAR_LOADING_HEADER", ".Kk7lMc-ae3xF-D"],
+                    ["APPBAR_LOADING_MAIN", ".Kk7lMc-ae3xF-x-Mj"],
+                    ["APPBAR_LOADING_GRAPHICS", ".Kk7lMc-ae3xF-jgixuf-Ti-j"],
+                    ["THUMBNAIL", "img[src^=\"https://lh3.google.com\"]", "File preview thumbnails."],
+                    ["QA_DOC_FILE", ".g5SSAf", "Non-image file in Quick Access."],
+                    ["MAIN_FILE", "div[role=gridcell]", "A file in the main view."],
+                    ["MAIN_IMAGE_FILE", "[aria-label$=Image]", "An image file in the main view."],
+                    ["MAIN_VIDEO_FILE", "[aria-label$=Video]", "A video file in the main view."],
+                    ["PREVIEW_POPUP", ".a-b-ja-el-db", "Preview pop-up (for viewing images, etc.)."],
+                    ["UNDO_POPUP", ".g-Yd-Na", "Popup at bottom left to undo previous action (e.g. moving a file)."],
+                    ["RIGHT_CLICK_MENU", "[role=menu]"]
+                  ],
+                  "customStyles":
+                  [
+                    "body { filter: none; }",
+                    "body > * { --dkn-invert: 0; }",
+                    ["INVERT", "body > :not(PREVIEW_POPUP):not(UNDO_POPUP)"],
+                    ["INVERT", "body > :not(PREVIEW_POPUP) svg"],
+                    ["INVERT", "QA_DOC_FILE THUMBNAIL"],
+                    ["INVERT", "MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL"]
+                  ]
+                },
+                {
+                  "regex": "^https://mail\\.google\\.com",
+                  "macros":
+                  [
+                    ["APPBAR_ICON", ".aT5-aOt-I-JX-Jw"],
+                    ["APPBAR_LOADING_HEADER", ".brC-brG-avC"],
+                    ["APPBAR_LOADING_MAIN", ".brC-brG-Jz-bBA.brC-brG-awd"],
+                    ["APPBAR_LOADING_GRAPHICS", ".brC-brG-bBc-bBb-Jw"],
+                    ["LOADING_SCREEN", "#loading", "Loading screen."],
+                    ["MAIL", "[role=main]:not(.BltHke)", "Mail contents."],
+                    ["BUTTON_ICON", "MAIL [role=button] img", "Button icons (e.g. reply button at top right of mail)."],
+                    ["COMPOSE_WINDOW", ".aaZ", "Standalone compose window."],
+                    ["COMPOSE_CONTENT", ".M9 > .aoI", "Mail compose contents."],
+                    ["POPUP_MENU", "[role=menu][aria-haspopup=true]", "Popup menu (for font selection, color, etc.)."],
+                    ["LISTBOX", "[role=listbox][aria-expanded=true]", "Recipient suggestion listbox."],
+                    ["LISTBOX_IMG", "LISTBOX [style^=background-image]", "Recipient profile pictures."],
+                    ["QUICK_SETTINGS", ".IU.nn", "Quick settings sidebar."],
+                    ["ACCOUNT_MENU", "[aria-label=\"Account Information\"]", "Accounts menu in top right."],
+                    ["UNDO_POPUP", ".b8.UC :nth-child(1) :nth-child(2)", "Undo popup (e.g. after discarding a draft)"],
+                    ["SEARCH_ACTIVE", "#aso_search_form_anchor.gb_bf", "Search bar and dropdown list when active."]
+                  ],
+                  "customStyles":
+                  [
+                    "body { filter: none; }",
+                    "body > * { --dkn-invert: 0; }",
+                    ["INVERT", "LOADING_SCREEN"],
+                    ["INVERT", "MAIL"],
+                    ["INVERT", "BUTTON_ICON"],
+                    ["INVERT", "COMPOSE_WINDOW"],
+                    ["INVERT", "COMPOSE_CONTENT"],
+                    ["INVERT", "POPUP_MENU"],
+                    ["INVERT", "LISTBOX"],
+                    ["NO_INVERT", "LISTBOX_IMG"],
+                    ["INVERT", "QUICK_SETTINGS"],
+                    ["INVERT", "ACCOUNT_MENU"],
+                    ["INVERT", "UNDO_POPUP"],
+                    ["INVERT", "SEARCH_ACTIVE"]
+                  ]
+                }
               ]
             },
             {
-              "regex": "^https://docs\\.google\\.com/spreadsheets",
+              "regex": "^https://keep\\.google\\.com/u/[0-9]+/companion",
+              "comment": "Google Keep iframe in app sidebar.",
               "macros":
               [
-                ["MODAL_BG", ".modal-dialog-bg", "Overlay when modal dialogs (e.g. Sheets resize column) are active."]
+                ["TOP_BUTTONS", "body > :first-child svg"]
               ],
               "customStyles":
               [
-                "/* Keep the overlay black after inverting. */",
-                ["WHITE", "MODAL_BG"]
+                ["INVERT", "TOP_BUTTONS"]
+              ]
+            },
+            {
+              "regex": "^https://ogs\\.google\\.com",
+              "comment": "Apps menu iframe (found in Gmail, Google Drive, etc. at top right).",
+              "macros":
+              [
+                ["APP_ICON", ".MrEfLc"]
+              ],
+              "customStyles":
+              [
+                "/* Preserve iframe transparency to avoid leaking out of frame in Gmail. */",
+                "html { background: transparent !important; }",
+                ["NO_INVERT", "APP_ICON"]
+              ]
+            },
+            {
+              "regex": "^https://www\\.google\\.com/maps",
+              "macros":
+              [
+                ["PREVIEW", ".full-screen", "Preview before map finishes loading."],
+                ["APP", "#app-container"],
+                ["APP_SATELLITE", "APP.app-imagery-mode", "App container in satellite view."],
+                ["MAP", "#scene"],
+                ["SEARCH_MENU_ICON", ".searchbox-icon", "Icon for the burger menu left of the search bar."]
+              ],
+              "customStyles":
+              [
+                "/* Sometimes the height is set to 0px, or the width doesn't update on window resize. */",
+                "html, body { width: 100% !important; height: 100% !important; }",
+                ["INVERT", "PREVIEW img"],
+                ["NO_INVERT", "APP_SATELLITE MAP"],
+                ["INVERT", "SEARCH_MENU_ICON"]
+              ]
+            },
+            {
+              "regex": "^https://www\\.google\\.com",
+              "macros":
+              [
+                ["SUGGESTION_THUMBNAIL", ".sbic.sbei", "Thumbnail images for search suggestions."]
+              ],
+              "customStyles":
+              [
+                ["NO_INVERT", "SUGGESTION_THUMBNAIL"]
               ]
             }
           ]
         },
         {
-          "regex": "^https://drive\\.google\\.com",
+          "regex": "https://developer\\.mozilla\\.org",
           "macros":
           [
-            ["THUMBNAIL", "img[src^=\"https://lh3.google.com\"]", "File preview thumbnails."],
-            ["QA_DOC_FILE", ".g5SSAf", "Non-image file in Quick Access."],
-            ["MAIN_FILE", "div[role=gridcell]", "A file in the main view."],
-            ["MAIN_IMAGE_FILE", "[aria-label$=Image]", "An image file in the main view."],
-            ["MAIN_VIDEO_FILE", "[aria-label$=Video]", "A video file in the main view."],
-            ["PREVIEW_POPUP", ".a-b-ja-el-db", "Preview pop-up (for viewing images, etc.)."],
-            ["UNDO_POPUP", ".g-Yd-Na", "Popup at bottom left to undo previous action (e.g. moving a file)."],
-            ["RIGHT_CLICK_MENU", "[role=menu]"]
+            ["CONTAINER", "#react-container"],
+            ["FOOTER", "#nav-footer"],
+            ["COMPAT_CELL", ".bc-supports-yes, .bc-supports-no, .bc-supports-unknown", "Browser compatibility table cells."]
           ],
           "customStyles":
           [
-            null,
-            ["INVERT", "body > *:not(PREVIEW_POPUP):not(UNDO_POPUP)"],
-            "/* Improve icon visibility. */",
-            ["FILTER_NONE", "body > *:not(PREVIEW_POPUP) svg"],
-            "/* Quick Access: do not uninvert thumbnails of documents. */",
-            ["FILTER_NONE", "QA_DOC_FILE THUMBNAIL"],
-            "/* Files: only uninvert thumbnails of images and videos. */",
-            ["FILTER_NONE", "MAIN_FILE:not(MAIN_IMAGE_FILE):not(MAIN_VIDEO_FILE) THUMBNAIL"]
+            ["BLACK", "html"],
+            ":root { --dkn-dcontrast: 0.95; }",
+            ["INVERT_DCONTRAST", "CONTAINER > :not(FOOTER)"],
+            "/* Preserve header icon contrast. */",
+            "header svg { filter: none !important; }",
+            "COMPAT_CELL { filter: saturate(3); }"
           ]
         },
         {
-          "regex": "^https://mail\\.google\\.com",
-          "comment": "Enable Gmail's dark theme as well.",
+          "comment": "StackExchange sites.",
           "macros":
           [
-            ["LOADING", "#loading", "Loading screen."],
-            ["MAIL", "[role=main]:not(.BltHke)", "Mail contents."],
-            ["COMPOSE", ".aaZ", "Compose window."],
-            ["COMPOSE_CONTENT", ".aoI", "Compose window contents."],
-            ["POPUP", "[role=menu][aria-haspopup=true]", "Popup menu (for font selection, color, etc.)."],
-            ["LISTBOX", "[role=listbox]", "Recipient suggestion listbox."],
-            ["QUICK_SETTINGS", ".IU.nn", "Quick settings sidebar."],
-            ["ACCOUNT_MENU", "[aria-label=\"Account Information\"]", "Accounts menu in top right."],
-            ["SIDEBAR_CONTAINER", ".brB-brH.brC-avC-J4-avO[role=tabpanel]", "Containers for calendar, notes, etc. in right sidebar."],
-            ["SIDEBAR_LOADING_HEADER", ".brC-brG-avC.brC-brG-avC-bta-atM", "Header displayed before sidebar iframe loads."],
-            ["SIDEBAR_LOADING_MAIN", "SIDEBAR_CONTAINER :nth-child(2) :nth-child(2)", "Loading screen for sidebar iframe."]
+            ["TOP_BAR", ".top-bar"],
+            ["TOP_BAR_DIALOG", ".topbar-dialog"],
+            ["SIGN_UP_BANNER", ".js-dismissable-hero"],
+            ["COOKIE_BANNER", "#js-gdpr-consent-banner"],
+            ["FOOTER", "#footer"],
+            ["INVERT_COMMON", ":not(COOKIE_BANNER)"]
           ],
           "customStyles":
           [
-            null,
-            ["INVERT", "LOADING"],
-            ["INVERT", "MAIL"],
-            ["BLACK", "COMPOSE"],
-            ["INVERT", "COMPOSE_CONTENT"],
-            "POPUP { filter: INVERT; }",
-            ["INVERT", "LISTBOX"],
-            ["INVERT", "QUICK_SETTINGS"],
-            ["INVERT", "ACCOUNT_MENU"],
-            "SIDEBAR_LOADING_HEADER { filter: INVERT; }",
-            ["INVERT", "SIDEBAR_LOADING_MAIN"]
+            ["BLACK", "body"]
+          ],
+          "rules":
+          [
+            {
+              "regex": "^https://([^/]+\\.stackexchange\\.com|askubuntu\\.com|mathoverflow\\.net|superuser\\.com)",
+              "customStyles":
+              [
+                ["INVERT", "body > INVERT_COMMON:not(SIGN_UP_BANNER):not(TOP_BAR)"],
+                ["INVERT", "TOP_BAR_DIALOG"]
+              ],
+              "rules":
+              [
+                {
+                  "regex": "^https://chess\\.stackexchange\\.com",
+                  "macros":
+                  [
+                    ["CHESSBOARD", ".chess-replayer > .board"]
+                  ],
+                  "customStyles":
+                  [
+                    ["NO_INVERT", "CHESSBOARD"]
+                  ]
+                }
+              ]
+            },
+            {
+              "regex": "^https://stackoverflow\\.com",
+              "customStyles":
+              [
+                ["INVERT", "body > INVERT_COMMON:not(FOOTER)"]
+              ]
+            },
+            {
+              "regex": "^https://meta\\.stackoverflow\\.com",
+              "customStyles":
+              [
+                ["INVERT", "body > INVERT_COMMON"]
+              ]
+            }
           ]
         },
         {
-          "regex": "^https://ogs\\.google\\.com",
-          "comment": "Apps menu iframe (found in Gmail, Google Drive, etc. at top right).",
+          "regex": "^https://[^/]+\\.wikipedia\\.org",
           "macros":
           [
-            ["APP_ICON", ".MrEfLc"]
+            ["HEADER", "#mw-page-base"],
+            ["MATH", ".mwe-math-element"],
+            ["LEGEND_COLOR", ".legend-color", "Colored boxes for map legends."],
+            ["MEDIA_BG", ".mw-mmv-overlay", "Background after clicking an image."],
+            ["MEDIA_BUTTON_PARENT", ".mw-mmv-pre-image"],
+            ["MEDIA_BUTTONS_TOP", "MEDIA_BUTTON_PARENT button", "Close, fullscreen, carousel controls."],
+            ["MEDIA_BUTTONS_BOTTOM", "MEDIA_BUTTON_PARENT [role=button]", "Download and share."]
           ],
           "customStyles":
           [
-            "/* Do not set black background: preserve iframe transparency. */",
-            null,
-            ["INVERT", "body"],
-            "APP_ICON { filter: INVERT; }"
+            ["BLACK", "html"],
+            ":root { --dkn-dcontrast: 0.95; }",
+            ["INVERT_DCONTRAST", "body"],
+            "/* Do not uninvert equations. */",
+            "MATH img { filter: none; }",
+            "/* Fix inconsistent background in left sidebar. */",
+            "body, HEADER { background: transparent; }",
+            ["NO_INVERT", "LEGEND_COLOR"],
+            ["NO_INVERT", "MEDIA_BG"],
+            ["NO_INVERT", "MEDIA_BUTTONS_TOP"],
+            ["NO_INVERT", "MEDIA_BUTTONS_BOTTOM"]
           ]
         }
       ]
     },
     {
-      "regex": "https://developer\\.mozilla\\.org",
-      "macros":
-      [
-        ["CONTAINER", "#react-container"],
-        ["FOOTER", "#nav-footer"]
-      ],
-      "customStyles":
-      [
-        ["BLACK", "html"],
-        ":root { --dkn-dcontrast: 0.95; }",
-        ["INVERT_DCONTRAST", "CONTAINER > :not(FOOTER)"],
-        "/* Preserve header icon contrast. */",
-        "header svg { filter: none !important; }"
-      ]
-    },
-    {
-      "regex": "^https://([^/]+\\.stackexchange.com|askubuntu\\.com|mathoverflow\\.net|(meta\\.)?stackoverflow\\.com|superuser\\.com)",
-      "macros":
-      [
-        ["TOP_BAR", ".top-bar"],
-        ["TOP_BAR_DIALOG", ".topbar-dialog"],
-        ["SIGN_UP_BANNER", ".js-dismissable-hero"],
-        ["COOKIE_BANNER", "#js-gdpr-consent-banner"],
-        ["FOOTER", "#footer"],
-        ["INVERT_COMMON", ":not(COOKIE_BANNER)"]
-      ],
-      "customStyles":
-      [
-        ["BLACK", "body"]
-      ],
+      "comment": "Sites with dark mode by default.",
       "rules":
       [
-        {
-          "regex": "^https://(meta\\.)?stackoverflow\\.com",
-          "customStyles":
-          [
-            ["INVERT", "body > INVERT_COMMON:not(FOOTER)"]
-          ]
-        },
-        {
-          "regex": "",
-          "customStyles":
-          [
-            ["INVERT", "body > INVERT_COMMON:not(SIGN_UP_BANNER):not(TOP_BAR)"],
-            ["INVERT", "TOP_BAR_DIALOG"]
-          ]
-        }
+        {"regex": "^https://bugzilla\\.mozilla\\.org"},
+        {"regex": "^https://imgur\\.com"},
+        {"regex": "^https://www\\.netflix\\.com"}
       ]
     },
     {
-      "regex": "^https://[^.]+\\.wikipedia.org",
-      "macros":
+      "comment": "Sites with a dark mode setting.",
+      "rules":
       [
-        ["HEADER", "#mw-page-base"],
-        ["MATH", ".mwe-math-element"]
-      ],
-      "customStyles":
-      [
-        ["BLACK", "html"],
-        ":root { --dkn-dcontrast: 0.95; }",
-        ["INVERT_DCONTRAST", "body"],
-        "/* Do not uninvert equations. */",
-        "MATH img { filter: none; }",
-        "/* Fix inconsistent background in left sidebar. */",
-        "body, HEADER { background: transparent; }"
+        {"regex": "^https://www\\.facebook\\.com"},
+        {"regex": "^https://www\\.reddit\\.com"},
+        {"regex": "^https://app\\.slack\\.com"},
+        {"regex": "^https://www\\.youtube\\.com"}
       ]
-    },
-    {"regex": "^https://bugzilla\\.mozilla\\.org"},
-    {"regex": "^https://www\\.facebook\\.com"},
-    {"regex": "^https://imgur\\.com"},
-    {"regex": "^https://www\\.netflix\\.com"},
-    {"regex": "^https://www\\.reddit\\.com"},
-    {"regex": "^https://app\\.slack\\.com"},
-    {"regex": "^https://www\\.youtube\\.com"}
+    }
   ]
 }
